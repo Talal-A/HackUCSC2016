@@ -150,6 +150,24 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
                     // Grabs the food name that is surrounded by the nutrition tag
 
+                    // Allergen Information
+                    String[] tempAllergens;
+                    Boolean allergenBoolean = false;
+                    for(Element el: doc2.getElementsByTag("nutrition")){
+                        String cur = el.select("span").text();
+                        if (allergenBoolean){
+                            tempAllergens = cur.split(",");
+                            for(int i = 0; i < tempAllergens.length; i++){
+                                System.out.println("Allergen info: " + tempAllergens[i]);
+                            }
+                            break;
+                        }
+                        if(cur.contains("Allergens:" + "\u00a0")){
+                            allergenBoolean = true;
+                        }
+
+                    }
+
                     boolean isProtein = false;
                     boolean isFat = false;
                     boolean isCarbs = false;
@@ -180,7 +198,6 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                         }
 
                         if (isProtein) {
-
 
                             String temp = cur.split("g")[0];
                             currentProtein = Float.valueOf(temp);
