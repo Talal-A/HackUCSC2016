@@ -29,7 +29,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Calendar;
 
-import java.util.Calendar;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * Created by talal.abouhaiba on 1/29/16.
@@ -89,7 +91,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                 String currentMonth = date.substring(5, 7);          // From current date
                 String currentDay =  "29";//date.substring(8);           // From current date
                 String currentYear = date.substring(0, 4);        // From current date
-                String currentMeal = "Breakfast";   // User chosen
+                String currentMeal = mealTime();   // User chosen
 
                 org.jsoup.nodes.Document doc = null;
 
@@ -240,7 +242,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
             mealHour = "Lunch";
         }else if(hourOfDay >= 5 && hourOfDay < 23){
             mealHour = "Dinner";
-    }
+        }
 
         return mealHour;
     }
