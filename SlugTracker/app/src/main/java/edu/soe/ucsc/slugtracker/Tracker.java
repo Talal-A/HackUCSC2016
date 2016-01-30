@@ -109,11 +109,17 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
                         locationNumber + "&dtdate=" + currentMonth + "%2F" + currentDay + "%2F" +
                         currentYear + "&mealName=" + currentMeal).get();
 
+//                String temp = doc.select("a[href]").id();
+
+
                 for(Element e: doc.select("a[href]"))
                     e.wrap("<foods></foods>");
 
                 for(Element e: doc.getElementsByTag("foods")) {
                     System.out.println(e.select("a[href]").text());
+                    String nutritionSite = e.select("a[href]").attr("abs:href");
+                    org.jsoup.nodes.Document doc2 = Jsoup.connect(nutritionSite).get();
+                    // parse needed
                 }
 
 
