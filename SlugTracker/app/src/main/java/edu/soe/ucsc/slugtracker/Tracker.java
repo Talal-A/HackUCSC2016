@@ -154,8 +154,9 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                     // Allergen Information
                     String[] tempAllergens;
                     Boolean allergenBoolean = false;
-                    for(Element el: doc2.getElementsByTag("nutrition")){
+                    for(Element el: doc2.select("span")){
                         String cur = el.select("span").text();
+                        System.out.println(cur);
                         if (allergenBoolean){
                             tempAllergens = cur.split(",");
                             for(int i = 0; i < tempAllergens.length; i++){
