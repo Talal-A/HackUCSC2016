@@ -62,9 +62,10 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
         // Create buttons
         settingsEditor = savedInfo.edit();
+
         count = (TextView) findViewById(R.id.textView);
 
-        calCount = 0;
+        calCount = savedInfo.getInt("Calories", 0);
         updateCount();
 
         // Alocate memory for list
@@ -281,6 +282,9 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
     private void updateCount() {
         count.setText(String.valueOf(calCount));
+        settingsEditor.putInt("Calories", calCount);
+        settingsEditor.apply();
+
     }
 
     //---------this is for the stack for removing mistakes--------------//
