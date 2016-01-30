@@ -94,7 +94,7 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
             Year:
                 2016
             */
-                
+
                 String locationNumber = "05";       // User chosen
                 String currentMonth = "02";         // From current date
                 String currentDay = "02";           // From current date
