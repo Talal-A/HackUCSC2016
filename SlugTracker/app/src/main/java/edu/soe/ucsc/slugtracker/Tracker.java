@@ -28,6 +28,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import java.util.Calendar;
+
 /**
  * Created by talal.abouhaiba on 1/29/16.
  *
@@ -87,17 +89,28 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                 String currentYear = date.substring(0, 4);        // From current date
                 String currentMeal = "Breakfast";   // User chosen
 
-                // Scrape info off site.
                 org.jsoup.nodes.Document doc = null;
 
-                try {
-                    doc = Jsoup.connect("http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=" +
-                            locationNumber + "&dtdate=" + currentMonth + "%2F" + currentDay + "%2F" +
-                            currentYear + "&mealName=" + currentMeal).get();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+                // checks what day of week it is to determine whether college is closed or not
+                Calendar c = Calendar.getInstance();
+                int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+                int college = Integer.parseInt(locationNumber);
+                if((dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) &&
+                        (college == 20 || college == 30)) {
+                    System.out.println("This college is closed");
+                } else if((dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) &&
+                        currentMeal.equals("Breakfast")){
+                    System.out.println("Breakfast is not served this day");
+                } else {
+                    // Scrape info off site.
+                    try {
+                        doc = Jsoup.connect("http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=" +
+                                locationNumber + "&dtdate=" + currentMonth + "%2F" + currentDay + "%2F" +
+                                currentYear + "&mealName=" + currentMeal).get();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                 }
-
 
                 // Search for line with food names.
                 // String temp = doc.select("a[href]").id();
