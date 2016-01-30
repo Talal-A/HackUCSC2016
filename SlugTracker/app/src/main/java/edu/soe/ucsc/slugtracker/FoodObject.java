@@ -6,6 +6,7 @@ package edu.soe.ucsc.slugtracker;
 public class FoodObject {
     // constantly updated depending on tag
     private String tag;
+    private String portion;
     private int calories;
     private int protein;
     private int fat;
@@ -22,6 +23,11 @@ public class FoodObject {
     // returns name of food
     public String getTag(){
         return tag;
+    }
+
+    // returns portion of food
+    public String getPortion(){
+        return portion;
     }
 
     // return calories of food
