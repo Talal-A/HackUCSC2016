@@ -133,16 +133,84 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                         el.wrap("<nutrition></nutrition>");
 
                     // Grabs the food name that is surrounded by the nutrition tag
+
+                    boolean isProtein = false;
+                    boolean isFat = false;
+                    boolean isCarbs = false;
+
+                    int currentCal = 0;
+                    float currentProtein = 0;
+                    float currentCarb = 0;
+                    float currentFat = 0;
+
+                    boolean obtainedProtein = false;
+                    boolean obtainedFat = false;
+                    boolean obtainedCarbs = false;
+                    boolean obtainedCalories = false;
+
+
                     for(Element el: doc2.getElementsByTag("nutrition")) {
+
+
                         String cur = el.select("font").text();
-                        int calCount;
-                        if (cur.contains("Calories" + "\u00a0")) {
-                            calCount = Integer.parseInt(cur.split("\u00a0")[1]);
-                            foodItems.add(new FoodObject(foodName,calCount,0,0,0));
+                        //System.out.println("TEST: " + cur);
+
+                        if (obtainedCalories && obtainedCarbs && obtainedFat && obtainedProtein) {
+
+                            foodItems.add(new FoodObject(foodName,currentCal,currentProtein, currentFat, currentCarb));
+
+                            break;
 
                         }
-                        else
-                            calCount = 0; // TODO: FIXME: Handle 0 cal count in constructor - ERROR
+
+                        if (isProtein) {
+
+
+                            String temp = cur.split("g")[0];
+                            currentProtein = Float.valueOf(temp);
+                            isProtein = false;
+                            obtainedProtein = true;
+
+                        } if (isFat) {
+                            String temp = cur.split("g")[0];
+
+                            currentFat = Float.valueOf(temp);
+
+                            isFat = false;
+                            obtainedFat = true;
+
+                        }  if (isCarbs) {
+                            String temp = cur.split("g")[0];
+
+                            currentCarb = Float.valueOf(temp);
+
+                            isCarbs = false;
+                            obtainedCarbs = true;
+
+
+                        }
+
+
+                        if (cur.contains("Calories" + "\u00a0")) {
+
+                            currentCal = Integer.parseInt(cur.split("\u00a0")[1]);
+                            obtainedCalories = true;
+
+                        } else if (cur.contains("Protein"+ "\u00a0")) {
+
+                            isProtein = true;
+
+                        } else if (cur.contains("Total Fat" + "\u00a0")) {
+
+                            isFat = true;
+
+                        } else if (cur.contains("Tot. Carb." + "\u00a0")) {
+
+                            isCarbs = true;
+
+                        }
+
+
 
                     }
                 }
@@ -196,7 +264,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
     }
 
     private void updateCount() {
-        count.setText("" + calCount);
+        count.setText(String.valueOf(calCount));
     }
 
     //---------this is for the stack for removing mistakes--------------//
