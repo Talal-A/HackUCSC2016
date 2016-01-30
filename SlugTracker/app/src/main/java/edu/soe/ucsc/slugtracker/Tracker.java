@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import org.jsoup.*;
 
+import org.jsoup.nodes.Element;
 import org.w3c.dom.Document;
 import java.io.IOException;
 
@@ -108,10 +109,13 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
                         locationNumber + "&dtdate=" + currentMonth + "%2F" + currentDay + "%2F" +
                         currentYear + "&mealName=" + currentMeal).get();
 
-                System.out.println(doc.title());
+                for(Element e: doc.select("a[href]"))
+                    e.wrap("<foods></foods>");
 
-                String temp = doc.select("a[href]").text();
-                System.out.println(temp);
+                for(Element e: doc.getElementsByTag("foods")) {
+                    System.out.println(e.select("a[href]").text());
+                }
+
 
             } catch (IOException e) {
                 e.printStackTrace();
