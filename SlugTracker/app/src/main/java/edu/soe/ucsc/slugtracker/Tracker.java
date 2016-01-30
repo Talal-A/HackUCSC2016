@@ -14,6 +14,8 @@ import org.jsoup.*;
 import org.jsoup.nodes.Element;
 import org.w3c.dom.Document;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by talal.abouhaiba on 1/29/16.
@@ -27,6 +29,7 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
     private SharedPreferences.Editor settingsEditor;
     TextView count;
     private int calCount;
+    private List<String> foodNames;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,11 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
 
         calCount = 0;
         updateCount();
+
+        // Alocate memory for list
+
+        foodNames = new ArrayList<>();
+
         new Task().execute();
     }
 
@@ -55,6 +63,7 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
 
             case R.id.add1:
                 calCount += 270;
+                System.out.println(foodNames);
                 break;
 
             case R.id.button:
@@ -113,7 +122,13 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
                     e.wrap("<foods></foods>");
 
                 for(Element e: doc.getElementsByTag("foods")) {
-                    System.out.println(e.select("a[href]").text());
+
+                    String current = e.select("a[href]").text();
+
+                    if (!current.equals("Top of Page")) {
+                        foodNames.add(e.select("a[href]").text());
+                    }
+
                 }
 
 
@@ -130,6 +145,7 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
         }
 
     }
+
 }
 /*
 
