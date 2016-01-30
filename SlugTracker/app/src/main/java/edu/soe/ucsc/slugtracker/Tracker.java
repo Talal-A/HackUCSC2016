@@ -125,13 +125,17 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
                     e.wrap("<foods></foods>");
 
                 for(Element e: doc.getElementsByTag("foods")) {
+
                     String current = e.select("a[href]").text();
-                    System.out.println(current);
-                    if (!current.equals("Top of Page")) {
-                        foodNames.add(e.select("a[href]").text());
+
+                    if (current.equals("Top of Page")) {
+                        break;
                     }
+
+                    foodNames.add(e.select("a[href]").text());
                     String nutritionSite = e.select("a[href]").attr("abs:href");
-                    org.jsoup.nodes.Document doc2 = Jsoup.connect(nutritionSite).get();
+
+                    System.out.println(nutritionSite);
                     // parse needed
                     
                 }
