@@ -137,7 +137,12 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
 
                     System.out.println(nutritionSite);
                     // parse needed
-                    
+                    for(Element el: doc.select("b"))
+                        el.wrap("<nutrition></nutrition>");
+                    for(Element el: doc2.getElementsByTag("nutrition")) {
+                        String cur = el.select("b").text();
+                        System.out.println(cur);
+                    }
                 }
 
 
