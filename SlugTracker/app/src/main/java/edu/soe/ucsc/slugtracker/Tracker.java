@@ -2,6 +2,7 @@ package edu.soe.ucsc.slugtracker;
 
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -25,11 +26,53 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
     private SharedPreferences.Editor settingsEditor;
     TextView count;
     private int calCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        try{
+
+        setContentView(R.layout.activity_tracker);
+
+        savedInfo = getSharedPreferences("savedInfo", 0);
+
+        settingsEditor = savedInfo.edit();
+        count = (TextView) findViewById(R.id.textView);
+        Button add1 = (Button) findViewById(R.id.add1);
+        add1.setOnClickListener(this);
+        Button add2 = (Button) findViewById(R.id.button);
+        add2.setOnClickListener(this);
+
+        calCount = 0;
+        updateCount();
+        new Task().execute();
+    }
+
+
+    public void onClick(View v) {
+        switch (v.getId()) {
+
+            case R.id.add1:
+                calCount += 270;
+                break;
+
+            case R.id.button:
+                calCount += 300;
+                break;
+        }
+
+        updateCount();
+    }
+
+    private void updateCount() {
+        count.setText("" + calCount);
+    }
+
+
+    private class Task extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
 
 
             /*
@@ -55,60 +98,31 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
 
 
             */
-            String locationNumber = "05";       // User chosen
-            String currentMonth = "02";         // From current date
-            String currentDay = "02";           // From current date
-            String currentYear = "2016";        // From current date
-            String currentMeal = "Breakfast";   // User chosen
+                String locationNumber = "05";       // User chosen
+                String currentMonth = "02";         // From current date
+                String currentDay = "02";           // From current date
+                String currentYear = "2016";        // From current date
+                String currentMeal = "Breakfast";   // User chosen
 
-            org.jsoup.nodes.Document doc = Jsoup.connect("http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=" +
-                    locationNumber + "&dtdate=" + currentMonth + "%2F" + currentDay + "%2F" +
-                    currentYear + "&mealName=" + currentMeal).get();
+                org.jsoup.nodes.Document doc = Jsoup.connect("http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=" +
+                        locationNumber + "&dtdate=" + currentMonth + "%2F" + currentDay + "%2F" +
+                        currentYear + "&mealName=" + currentMeal).get();
 
-            System.out.println(doc.title());
-        }catch (IOException e) {
-            e.printStackTrace();
+                System.out.println(doc.title());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return "";
         }
 
-
-
-        setContentView(R.layout.activity_tracker);
-
-        savedInfo = getSharedPreferences("savedInfo", 0);
-
-        settingsEditor = savedInfo.edit();
-        count = (TextView) findViewById(R.id.textView);
-        Button add1 = (Button) findViewById(R.id.add1);
-        add1.setOnClickListener(this);
-        Button add2 = (Button) findViewById(R.id.button);
-        add2.setOnClickListener(this);
-
-        calCount = 0;
-        updateCount();
-
-    }
-
-    public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.add1:
-                calCount += 270;
-                break;
-
-            case R.id.button:
-                calCount += 300;
-                break;
+        @Override
+        protected void onPostExecute(String result) {
+            System.out.println(result);
         }
 
-        updateCount();
-    }
-
-    private void updateCount() {
-        count.setText("" + calCount);
     }
 }
-
-
 /*
 
     <tbody>
