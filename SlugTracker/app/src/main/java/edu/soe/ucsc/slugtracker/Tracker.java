@@ -14,7 +14,9 @@ import org.jsoup.*;
 import org.jsoup.nodes.Element;
 import org.w3c.dom.Document;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -104,10 +106,12 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
                 2016
             */
 
+                String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+                System.out.println(date);
                 String locationNumber = "05";       // User chosen
-                String currentMonth = "02";         // From current date
-                String currentDay = "02";           // From current date
-                String currentYear = "2016";        // From current date
+                String currentMonth = date.substring(5, 7);          // From current date
+                String currentDay = date.substring(8);           // From current date
+                String currentYear = date.substring(0, 4);        // From current date
                 String currentMeal = "Breakfast";   // User chosen
 
                 // Scrape info off site.
