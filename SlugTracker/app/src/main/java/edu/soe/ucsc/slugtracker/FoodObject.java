@@ -4,13 +4,22 @@ package edu.soe.ucsc.slugtracker;
  * Created by Wesly on 1/29/2016.
  */
 public class FoodObject {
-    // constantly updated depending on tag
+    // Constantly updated info depending on tag.
     private String tag;
     private String portion;
     private int calories;
     private int protein;
     private int fat;
     private int carbs;
+
+    // Allergens
+    private boolean egg;
+    private boolean wheat;
+    private boolean soy;
+    private boolean milk;
+    private boolean treeNut;
+    private boolean gluten;
+
 
     public FoodObject(String tag, int calories, int protein, int fat, int carbs){
         this.tag = tag;
@@ -20,32 +29,32 @@ public class FoodObject {
         this.carbs = carbs;
     }
 
-    // returns name of food
+    // Returns name of food.
     public String getTag(){
         return tag;
     }
 
-    // returns portion of food
+    // Returns portion of food.
     public String getPortion(){
         return portion;
     }
 
-    // return calories of food
+    // Return calories of food.
     public int getCal(){
         return calories;
     }
 
-    // return protein of food
+    // Return protein of food.
     public int getPro(){
         return protein;
     }
 
-    // return fat of food
+    // Return fat of food.
     public int getFat(){
         return fat;
     }
 
-    // return carbs of food
+    // Return carbs of food.
     public int getCarbs(){
         return carbs;
     }
