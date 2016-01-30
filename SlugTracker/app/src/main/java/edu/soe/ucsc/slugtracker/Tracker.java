@@ -124,6 +124,7 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
 
                 for(Element e: doc.select("a[href]"))
                     e.wrap("<foods></foods>");
+
                 // Searching through tags for just the names.
                 for(Element e: doc.getElementsByTag("foods")) {
 
@@ -170,6 +171,8 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
         }
 
     }
+
+    //public void
 
 }
 /*
