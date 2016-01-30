@@ -141,7 +141,8 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
                         el.wrap("<nutrition></nutrition>");
                     for(Element el: doc2.getElementsByTag("nutrition")) {
                         String cur = el.select("font").text();
-                        System.out.println(cur);
+                        if (cur.contains("Calories" + "\u00a0"))
+                            System.out.println(cur.split("\u00a0")[1]);
                     }
                 }
 
