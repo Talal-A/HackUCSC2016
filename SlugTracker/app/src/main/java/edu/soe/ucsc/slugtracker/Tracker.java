@@ -109,6 +109,10 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
                         currentYear + "&mealName=" + currentMeal).get();
 
                 System.out.println(doc.title());
+
+                String temp = doc.select("a[href]").text();
+                System.out.println(temp);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
