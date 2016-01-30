@@ -103,7 +103,9 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                 } else if((dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) &&
                         currentMeal.equals("Breakfast")){
                     System.out.println("Breakfast is not served this day");
-                } else {
+                }
+
+                // FIXME: Should be in an else block, add else after we handle an "empty day"
                     // Scrape info off site.
                     try {
                         doc = Jsoup.connect("http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=" +
@@ -112,11 +114,10 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
-                }
+
 
                 // Search for line with food names.
                 // String temp = doc.select("a[href]").id();
-
 
                 for(Element e: doc.select("a[href]"))
                     e.wrap("<foods></foods>");
