@@ -15,7 +15,6 @@ public class FoodObject {
     // Allergens
     private boolean egg;
     private boolean wheat;
-    private boolean gluten;
     private boolean soy;
     private boolean milk;
     private boolean treeNut;

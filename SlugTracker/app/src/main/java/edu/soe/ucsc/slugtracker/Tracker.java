@@ -14,6 +14,8 @@ import org.jsoup.*;
 import org.jsoup.nodes.Element;
 import org.w3c.dom.Document;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by talal.abouhaiba on 1/29/16.
@@ -27,6 +29,7 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
     private SharedPreferences.Editor settingsEditor;
     TextView count;
     private int calCount;
+    private List<String> foodNames;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,11 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
 
         calCount = 0;
         updateCount();
+
+        // Alocate memory for list
+
+        foodNames = new ArrayList<>();
+
         new Task().execute();
     }
 
@@ -56,6 +64,7 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
 
             case R.id.add1:
                 calCount += 270;
+                System.out.println(foodNames);
                 break;
 
             case R.id.button:
@@ -106,12 +115,33 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
                         locationNumber + "&dtdate=" + currentMonth + "%2F" + currentDay + "%2F" +
                         currentYear + "&mealName=" + currentMeal).get();
 
+
                 // Search for line with food names.
+//                String temp = doc.select("a[href]").id();
+
+
                 for(Element e: doc.select("a[href]"))
                     e.wrap("<foods></foods>");
                 // Searching through tags for just the names.
                 for(Element e: doc.getElementsByTag("foods")) {
-                    System.out.println(e.select("a[href]").text());
+
+                    String current = e.select("a[href]").text();
+
+                    if (current.equals("Top of Page")) {
+                        break;
+                    }
+
+                    foodNames.add(e.select("a[href]").text());
+                    String nutritionSite = e.select("a[href]").attr("abs:href");
+
+                    System.out.println(nutritionSite);
+                    // parse needed
+                    for(Element el: doc.select("b"))
+                        el.wrap("<nutrition></nutrition>");
+                    for(Element el: doc2.getElementsByTag("nutrition")) {
+                        String cur = el.select("b").text();
+                        System.out.println(cur);
+                    }
                 }
 
 
@@ -130,6 +160,7 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
         }
 
     }
+
 }
 /*
     <tbody>
