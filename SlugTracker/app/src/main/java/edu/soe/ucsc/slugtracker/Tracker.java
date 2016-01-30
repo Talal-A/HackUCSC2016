@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Calendar;
 
 /**
  * Created by talal.abouhaiba on 1/29/16.
@@ -81,6 +82,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
                 String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
                 System.out.println(date);
+                System.out.println(mealTime());
                 String locationNumber = "05";       // User chosen
                 String currentMonth = date.substring(5, 7);          // From current date
                 String currentDay =  "29";//date.substring(8);           // From current date
@@ -214,6 +216,21 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         return removed;
     }
 
+    // Get time of day and returns String for Breakfast, Lunch, Dinner, or Closed.
+    public String mealTime(){
+        Calendar c = Calendar.getInstance();
+        int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
+        String mealHour = "Closed";
+        if(hourOfDay >= 7 && hourOfDay < 12){
+            mealHour = "Breakfast";
+        }else if(hourOfDay >= 12 && hourOfDay < 17){
+            mealHour = "Lunch";
+        }else if(hourOfDay >= 5 && hourOfDay < 23){
+            mealHour = "Dinner";
+    }
+
+        return mealHour;
+    }
 }
 /*
     <tbody>
