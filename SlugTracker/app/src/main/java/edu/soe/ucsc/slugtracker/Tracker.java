@@ -79,7 +79,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                 System.out.println(date);
                 String locationNumber = "05";       // User chosen
                 String currentMonth = date.substring(5, 7);          // From current date
-                String currentDay = date.substring(8);           // From current date
+                String currentDay =  "29";//date.substring(8);           // From current date
                 String currentYear = date.substring(0, 4);        // From current date
                 String currentMeal = "Breakfast";   // User chosen
 
