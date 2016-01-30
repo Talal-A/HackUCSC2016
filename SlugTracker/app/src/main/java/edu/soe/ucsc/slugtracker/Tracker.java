@@ -10,6 +10,7 @@ public class Tracker extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         System.out.println("HELP ME");
         System.out.println("app");
+        System.out.println("Whatever");
         setContentView(R.layout.activity_tracker);
     }
 }
