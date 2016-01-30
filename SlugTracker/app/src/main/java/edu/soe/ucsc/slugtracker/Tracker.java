@@ -9,6 +9,7 @@ import android.widget.Button;
 import org.jsoup.*;
 
 import org.w3c.dom.Document;
+import java.io.IOException;
 
 /**
  * Created by talal.abouhaiba on 1/29/16.
@@ -28,9 +29,46 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
         System.out.println("Whatever");
 
 
-       /* Document doc = Jsoup.connect("http://nutrition.sa.ucsc.edu/pickMenu.asp?location" +
-                "Num=05&dtdate=02%2F02%2F2016&mealName=Breakfast").get();
-        */
+        try{
+
+
+            /*
+
+
+
+            http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=
+            [LOCATION_NUMBER]&dtdate=
+            [MONTH]%2F[DAY]%2F[YEAR]&mealName=[Breakfast/Lunch/Dinner]
+
+            Locations:
+            05: Cowell Stevenson
+            20: Crown Merrill
+            25: Porter Kresge
+            30: Eight Oakes
+            40: Nine Ten
+            Month:
+                01-12
+            Day:
+                01-28/31
+            Year:
+                2016
+
+
+            */
+            String locationNumber = "05";       // User chosen
+            String currentMonth = "02";         // From current date
+            String currentDay = "02";           // From current date
+            String currentYear = "2016";        // From current date
+            String currentMeal = "Breakfast";   // User chosen
+
+            org.jsoup.nodes.Document doc = Jsoup.connect("http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=" +
+                    locationNumber + "&dtdate=" + currentMonth + "%2F" + currentDay + "%2F" +
+                    currentYear + "&mealName=" + currentMeal).get();
+
+            System.out.println(doc.title());
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
 
