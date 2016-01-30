@@ -37,6 +37,7 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
 
         savedInfo = getSharedPreferences("savedInfo", 0);
 
+        // Create buttons
         settingsEditor = savedInfo.edit();
         count = (TextView) findViewById(R.id.textView);
         Button add1 = (Button) findViewById(R.id.add1);
@@ -49,7 +50,7 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
         new Task().execute();
     }
 
-
+    // When button clicked add calories.
     public void onClick(View v) {
         switch (v.getId()) {
 
@@ -75,11 +76,7 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
         protected String doInBackground(Void... params) {
             try {
 
-
             /*
-
-
-
             http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=
             [LOCATION_NUMBER]&dtdate=
             [MONTH]%2F[DAY]%2F[YEAR]&mealName=[Breakfast/Lunch/Dinner]
@@ -96,22 +93,23 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
                 01-28/31
             Year:
                 2016
-
-
             */
+                
                 String locationNumber = "05";       // User chosen
                 String currentMonth = "02";         // From current date
                 String currentDay = "02";           // From current date
                 String currentYear = "2016";        // From current date
                 String currentMeal = "Breakfast";   // User chosen
 
+                // Scrape info off site.
                 org.jsoup.nodes.Document doc = Jsoup.connect("http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=" +
                         locationNumber + "&dtdate=" + currentMonth + "%2F" + currentDay + "%2F" +
                         currentYear + "&mealName=" + currentMeal).get();
 
+                // Search for line with food names.
                 for(Element e: doc.select("a[href]"))
                     e.wrap("<foods></foods>");
-
+                // Searching through tags for just the names.
                 for(Element e: doc.getElementsByTag("foods")) {
                     System.out.println(e.select("a[href]").text());
                 }
@@ -124,6 +122,8 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
             return "";
         }
 
+
+        // Print all the food names.
         @Override
         protected void onPostExecute(String result) {
             System.out.println(result);
@@ -132,7 +132,6 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
     }
 }
 /*
-
     <tbody>
         <tr>...<tr> Contains all of the information for each food item
 
