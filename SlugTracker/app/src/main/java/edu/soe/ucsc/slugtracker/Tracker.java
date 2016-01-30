@@ -336,23 +336,22 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         return mealHour;
     }
 
-    // Takes in dinning hall name(ex. CowellStevenson), and returns it's web number.
+    // Takes in dinning hall name(ex. Cowell/Stevenson), and returns it's web number.
     public int webLocation(String location){
         int locationNumber = 0;
-        if(location == "CowellStevenson"){
+        if(location == "Cowell/Stevenson"){
             locationNumber = 5;
-        }else if(location == "CrownMerrill"){
+        }else if(location == "Crown/Merrill"){
             locationNumber = 20;
-        }else if(location == "PorterKresge") {
+        }else if(location == "Porter/Kresge") {
             locationNumber = 25;
-        }else if(location == "EightOakes"){
+        }else if(location == "Eight/Oakes"){
             locationNumber = 30;
-        }else if(location == "NineTen"){
+        }else if(location == "Nine/Ten"){
             locationNumber = 40;
         }
         return locationNumber;
     }
-}
 }
 /*
     <tbody>
