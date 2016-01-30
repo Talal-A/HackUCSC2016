@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+
 import org.jsoup.*;
 
 import org.w3c.dom.Document;
@@ -20,13 +22,11 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
 
     SharedPreferences savedInfo;
     private SharedPreferences.Editor settingsEditor;
-
+    TextView count;
+    private int calCount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("HELP ME");
-        System.out.println("Whatever");
-
 
        /* Document doc = Jsoup.connect("http://nutrition.sa.ucsc.edu/pickMenu.asp?location" +
                 "Num=05&dtdate=02%2F02%2F2016&mealName=Breakfast").get();
@@ -39,10 +39,14 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
         savedInfo = getSharedPreferences("savedInfo", 0);
 
         settingsEditor = savedInfo.edit();
-
+        count = (TextView) findViewById(R.id.textView);
         Button add1 = (Button) findViewById(R.id.add1);
         add1.setOnClickListener(this);
+        Button add2 = (Button) findViewById(R.id.button);
+        add2.setOnClickListener(this);
 
+        calCount = 0;
+        updateCount();
 
     }
 
@@ -50,12 +54,20 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
         switch (v.getId()) {
 
             case R.id.add1:
-                System.out.println("Test");
+                calCount += 270;
+                break;
+
+            case R.id.button:
+                calCount += 300;
                 break;
         }
+
+        updateCount();
     }
 
-
+    private void updateCount() {
+        count.setText("" + calCount);
+    }
 }
 
 
