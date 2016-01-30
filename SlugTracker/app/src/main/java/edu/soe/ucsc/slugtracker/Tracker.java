@@ -123,7 +123,7 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
 
 
                 // Search for line with food names.
-//                String temp = doc.select("a[href]").id();
+                // String temp = doc.select("a[href]").id();
 
 
                 for(Element e: doc.select("a[href]"))
@@ -142,8 +142,13 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
                     System.out.println(nutritionSite);
                     // parse needed
                     org.jsoup.nodes.Document doc2 = Jsoup.connect(nutritionSite).get();
+
+                    // Wraps the current food item with a nutrition tag so that we can parse them.
+                    // Without this for loop we end up getting all of the food tags on a single line
                     for(Element el: doc2.select("font"))
                         el.wrap("<nutrition></nutrition>");
+
+                    // Grabs the food name that is surrounded by the nutrition tag
                     for(Element el: doc2.getElementsByTag("nutrition")) {
                         String cur = el.select("font").text();
                         int calCount;
