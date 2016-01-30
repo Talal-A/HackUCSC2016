@@ -29,7 +29,7 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
     private SharedPreferences.Editor settingsEditor;
     TextView count;
     private int calCount;
-    private List<String> foodNames;
+    private List<FoodObject> foodItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
 
         // Alocate memory for list
 
-        foodNames = new ArrayList<>();
+        foodItems = new ArrayList<>();
 
         new Task().execute();
     }
@@ -64,7 +64,9 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
 
             case R.id.add1:
                 calCount += 270;
-                System.out.println(foodNames);
+                for (FoodObject e: foodItems) {
+                    System.out.println(e.getTag() + " " + e.getCal());
+                }
                 break;
 
             case R.id.button:
@@ -126,12 +128,11 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
                 for(Element e: doc.getElementsByTag("foods")) {
 
                     String current = e.select("a[href]").text();
-
+                    String foodName = e.select("a[href]").text();
                     if (current.equals("Top of Page")) {
                         break;
                     }
 
-                    foodNames.add(e.select("a[href]").text());
                     String nutritionSite = e.select("a[href]").attr("abs:href");
 
                     System.out.println(nutritionSite);
@@ -141,8 +142,15 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
                         el.wrap("<nutrition></nutrition>");
                     for(Element el: doc2.getElementsByTag("nutrition")) {
                         String cur = el.select("font").text();
-                        if (cur.contains("Calories" + "\u00a0"))
-                            System.out.println(cur.split("\u00a0")[1]);
+                        int calCount;
+                        if (cur.contains("Calories" + "\u00a0")) {
+                            calCount = Integer.parseInt(cur.split("\u00a0")[1]);
+                            foodItems.add(new FoodObject(foodName,calCount,0,0,0));
+
+                        }
+                        else
+                            calCount = 0; // TODO: FIXME: Handle 0 cal count in constructor - ERROR
+
                     }
                 }
 
