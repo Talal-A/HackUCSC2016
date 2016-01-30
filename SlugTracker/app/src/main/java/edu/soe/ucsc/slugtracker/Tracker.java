@@ -9,6 +9,7 @@ public class Tracker extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         System.out.println("HELP ME");
+        System.out.println("Whatever");
         setContentView(R.layout.activity_tracker);
     }
 }
