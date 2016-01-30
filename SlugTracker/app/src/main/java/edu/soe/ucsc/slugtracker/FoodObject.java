@@ -8,9 +8,9 @@ public class FoodObject {
     private String tag;
     private String portion;
     private int calories;
-    private int protein;
-    private int fat;
-    private int carbs;
+    private float protein;
+    private float fat;
+    private float carbs;
 
     // Allergens
     private boolean egg;
@@ -26,7 +26,7 @@ public class FoodObject {
     private boolean vegitarian;
 
     // Instantiate food object, and sets basic info.
-    public FoodObject(String tag, int calories, int protein, int fat, int carbs){
+    public FoodObject(String tag, int calories, float protein, float fat, float carbs){
         this.tag = tag;
         this.calories = calories;
         this.protein = protein;
@@ -67,17 +67,17 @@ public class FoodObject {
     }
 
     // Return protein of food.
-    public int getPro(){
+    public float getPro(){
         return protein;
     }
 
     // Return fat of food.
-    public int getFat(){
+    public float getFat(){
         return fat;
     }
 
     // Return carbs of food.
-    public int getCarbs(){
+    public float getCarbs(){
         return carbs;
     }
 
