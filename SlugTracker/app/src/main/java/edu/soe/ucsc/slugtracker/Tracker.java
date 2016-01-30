@@ -26,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Created by talal.abouhaiba on 1/29/16.
@@ -43,6 +44,9 @@ public class Tracker extends ListActivity implements View.OnClickListener {
     ArrayAdapter arrayAdapter;
     ProgressDialog pd;
     private Handler handler;
+
+    private FoodObject[] stack = new FoodObject[500];
+    int size = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,6 +180,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 calCount += foodItems.get(position).getCal();
+                push(foodItems.get(position));
                 updateCount();
             }
         });
@@ -192,6 +197,21 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
     private void updateCount() {
         count.setText("" + calCount);
+    }
+
+    //---------this is for the stack for removing mistakes--------------//
+
+    public void push(FoodObject item){
+        stack[size ++] = item;
+    }
+
+    public FoodObject pop(){
+        if(size == 0){
+            throw new NoSuchElementException("Cannot pop from empty stack");
+        }
+        FoodObject removed = stack[size-1];
+        stack[-- size] = null;
+        return removed;
     }
 
 }
