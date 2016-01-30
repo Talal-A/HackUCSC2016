@@ -1,12 +1,20 @@
 package edu.soe.ucsc.slugtracker;
 
+import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.jsoup.*;
@@ -25,13 +33,16 @@ import java.util.List;
  * This class is designed to allow the user to "add" meal items to their running calorie total.
  */
 
-public class Tracker extends AppCompatActivity implements View.OnClickListener {
+public class Tracker extends ListActivity implements View.OnClickListener {
 
     SharedPreferences savedInfo;
     private SharedPreferences.Editor settingsEditor;
     TextView count;
     private int calCount;
     private List<FoodObject> foodItems;
+    ArrayAdapter arrayAdapter;
+    ProgressDialog pd;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +56,6 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
         // Create buttons
         settingsEditor = savedInfo.edit();
         count = (TextView) findViewById(R.id.textView);
-        Button add1 = (Button) findViewById(R.id.add1);
-        add1.setOnClickListener(this);
-        Button add2 = (Button) findViewById(R.id.button);
-        add2.setOnClickListener(this);
 
         calCount = 0;
         updateCount();
@@ -56,57 +63,17 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
         // Alocate memory for list
 
         foodItems = new ArrayList<>();
+        System.out.println("begin");
+        //new Task().execute();
 
-        new Task().execute();
-    }
+        pd = ProgressDialog.show(this,"", "Loading", true, false);
+        handler = new Handler();
 
-    // When button clicked add calories.
-    public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.add1:
-                calCount += 270;
-                for (FoodObject e: foodItems) {
-                    System.out.println(e.getTag() + " " + e.getCal());
-                }
-                break;
-
-            case R.id.button:
-                calCount += 300;
-                break;
-        }
-
-        updateCount();
-    }
-
-    private void updateCount() {
-        count.setText("" + calCount);
-    }
-
-
-    private class Task extends AsyncTask<Void, Void, String> {
-        @Override
-        protected String doInBackground(Void... params) {
-            try {
-
-            /*
-            http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=
-            [LOCATION_NUMBER]&dtdate=
-            [MONTH]%2F[DAY]%2F[YEAR]&mealName=[Breakfast/Lunch/Dinner]
-
-            Locations:
-            05: Cowell Stevenson
-            20: Crown Merrill
-            25: Porter Kresge
-            30: Eight Oakes
-            40: Nine Ten
-            Month:
-                01-12
-            Day:
-                01-28/31
-            Year:
-                2016
-            */
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("in run");
+                Looper.prepare();
 
                 String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
                 System.out.println(date);
@@ -117,9 +84,15 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
                 String currentMeal = "Breakfast";   // User chosen
 
                 // Scrape info off site.
-                org.jsoup.nodes.Document doc = Jsoup.connect("http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=" +
-                        locationNumber + "&dtdate=" + currentMonth + "%2F" + currentDay + "%2F" +
-                        currentYear + "&mealName=" + currentMeal).get();
+                org.jsoup.nodes.Document doc = null;
+
+                try {
+                    doc = Jsoup.connect("http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=" +
+                            locationNumber + "&dtdate=" + currentMonth + "%2F" + currentDay + "%2F" +
+                            currentYear + "&mealName=" + currentMeal).get();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
 
 
                 // Search for line with food names.
@@ -142,7 +115,13 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
 
                     System.out.println(nutritionSite);
                     // parse needed
-                    org.jsoup.nodes.Document doc2 = Jsoup.connect(nutritionSite).get();
+                    org.jsoup.nodes.Document doc2 = null;
+
+                    try {
+                        doc2 = Jsoup.connect(nutritionSite).get();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
 
                     // Wraps the current food item with a nutrition tag so that we can parse them.
                     // Without this for loop we end up getting all of the food tags on a single line
@@ -164,24 +143,56 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
                     }
                 }
 
+                Looper.myLooper().quit();
 
-            } catch (IOException e) {
-                e.printStackTrace();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<String> thelist = new ArrayList<>();
+
+                        for (FoodObject e: foodItems)
+                            thelist.add(e.getTag());
+
+                        arrayAdapter = new ArrayAdapter(getApplicationContext(), R.layout.list_item, R.id.tvName,thelist);
+
+                        getListView().setAdapter(arrayAdapter);
+
+                        pd.dismiss();
+                    }
+                });
+
+
+
+            } // end run
+        }; // end runnable
+        Thread thread = new Thread(runnable);
+        thread.start();
+        System.out.println("end");
+
+        ListView lv = getListView();
+        lv.setAdapter(arrayAdapter);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                calCount += foodItems.get(position).getCal();
+                updateCount();
             }
-
-            return "";
-        }
-
-
-        // Print all the food names.
-        @Override
-        protected void onPostExecute(String result) {
-            System.out.println(result);
-        }
-
+        });
     }
 
-    //public void
+    // When button clicked add calories.
+    public void onClick(View v) {
+        switch (v.getId()) {
+
+        }
+
+        updateCount();
+    }
+
+    private void updateCount() {
+        count.setText("" + calCount);
+    }
 
 }
 /*
