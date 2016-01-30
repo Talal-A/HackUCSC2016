@@ -136,6 +136,7 @@ public class Tracker extends AppCompatActivity implements View.OnClickListener {
 
                     System.out.println(nutritionSite);
                     // parse needed
+                    org.jsoup.nodes.Document doc2 = Jsoup.connect(nutritionSite).get();
                     for(Element el: doc2.select("font"))
                         el.wrap("<nutrition></nutrition>");
                     for(Element el: doc2.getElementsByTag("nutrition")) {
