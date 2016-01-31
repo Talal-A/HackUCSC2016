@@ -53,6 +53,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/closedHall"
         android:layout_centerInParent="true"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@drawable/closedicon" />
 
 </RelativeLayout>
