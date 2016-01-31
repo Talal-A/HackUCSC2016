@@ -158,11 +158,42 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                     // Grabs the food name that is surrounded by the nutrition tag
 
                     // Allergen Information
-                    String[] tempAllergens = null;
-                    boolean milk = false, soy = false, treeOrPNut = false, gluten = false, fishShell = false,  egg = false,  wheat = false, allergenBoolean = false;
+                    //String[] tempAllergens = null;
+                    boolean milk = false, soy = false, treeOrPNut = false, gluten = false, fishShell = false,  egg = false,  wheat = false;
+                    //allergenBoolean = false;
                     for(Element el: doc2.select("span")){
                         String cur = el.select("span").text();
                         System.out.println(cur);
+                        if(cur.contains("Egg")){
+                            egg = true;
+                            System.out.println("Contains Eggs");
+                        }
+                        if(cur.contains("Soybean")){
+                            soy = true;
+                            System.out.println("Contains Soybean");
+                        }
+                        if(cur.contains("Gluten")){
+                            gluten = true;
+                            System.out.println("Contains Gluten");
+                        }
+                        if(cur.contains("Wheat")){
+                            wheat = true;
+                            System.out.println("Contains Wheat");
+                        }
+                        if(cur.contains("Milk")){
+                            milk = true;
+                            System.out.println("Contains Milk");
+                        }
+                        if(cur.contains("Tree Nut") ||
+                                cur.contains("Peanut")) {
+                            treeOrPNut = true;
+                            System.out.println("Contains Tree Nut / Peanut");
+                        }
+                        if(cur.contains("Fish") || cur.contains("fish")){
+                            fishShell = true;
+                            System.out.println("Contains Fish");
+                        }
+                        /*
                         if (allergenBoolean){
                             System.out.println("IN ALLERGEN BOOLEAN");
                             tempAllergens = cur.split(",");
@@ -174,8 +205,8 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                         if(cur.contains("Allergens:" + "\u00a0")){
                             allergenBoolean = true;
                         }
-
-                    }
+                        */
+                    }/*
                     if (tempAllergens != null)
                     for(int i = 0; i < tempAllergens.length; i++){
                         if(tempAllergens[i].contains("Egg")){
@@ -207,7 +238,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                             fishShell = true;
                             System.out.println("Contains Fish");
                         }
-                    }
+                    }*/
                     boolean isProtein = false;
                     boolean isFat = false;
                     boolean isCarbs = false;
