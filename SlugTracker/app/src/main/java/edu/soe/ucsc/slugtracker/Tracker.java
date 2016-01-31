@@ -43,6 +43,10 @@ public class Tracker extends ListActivity implements View.OnClickListener {
     SharedPreferences savedInfo;
 
     private int calCount;
+    private int fatCount;
+    private int proCount;
+    private int carCount;
+
     private int locationNum;
 
     private SharedPreferences.Editor settingsEditor;
@@ -84,6 +88,10 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         noList.setVisibility(View.INVISIBLE);
 
         calCount = savedInfo.getInt("Calories", 0);
+        fatCount = savedInfo.getInt("Fat", 0);
+        proCount = savedInfo.getInt("Protein",0);
+        carCount = savedInfo.getInt("Carbs", 0);
+
         locationNum = savedInfo.getInt("LocationNum", 5);
         updateCount();
 
@@ -128,7 +136,17 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                 break;
 
             case R.id.statisticButton:
+                String cal = "Calories: " + calCount;
+                String fat = "Fat: " + fatCount + "g";
+                String pro = "Protein: " + proCount + "g";
+                String car = "Carbohydrates: " + carCount + "g";
+
                 System.out.println("pressed!");
+                AlertDialog statsAlert = new AlertDialog.Builder(this).create();
+                        statsAlert.setTitle("Statistics:");
+                        statsAlert.setMessage(cal + "\n" + fat + "\n" + pro + "\n" + car);
+
+                statsAlert.show();
                 break;
 
         } // end switch
@@ -408,6 +426,9 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         else {
             count.setText(String.valueOf(calCount) + " cal.");
             settingsEditor.putInt("Calories", calCount);
+            settingsEditor.putInt("Carbs", carCount);
+            settingsEditor.putInt("Fats", fatCount);
+            settingsEditor.putInt("Protein", proCount);
             settingsEditor.apply();
         }
     }
