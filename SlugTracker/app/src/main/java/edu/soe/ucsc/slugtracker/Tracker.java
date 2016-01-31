@@ -85,7 +85,6 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         savedInfo = getSharedPreferences("savedInfo", 0);
 
 
-
         // Create buttons
         settingsEditor = savedInfo.edit();
 
@@ -93,21 +92,25 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         noList = (ImageView) findViewById(R.id.closedHall);
         noList.setVisibility(View.INVISIBLE);
 
-        calCount = savedInfo.getInt("Calories", 0);
-        fatCount = savedInfo.getFloat("Fat", 0);
-        proCount = savedInfo.getFloat("Protein", 0);
-        carCount = savedInfo.getFloat("Carbs", 0);
         curdate = savedInfo.getString("date", "");
-        dbIndex = savedInfo.getInt("dbIndex",0);
+        dbIndex = savedInfo.getInt("dbIndex", 0);
+
 
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
         Date today = Calendar.getInstance().getTime();
+        System.out.println(df.format(today));
         if(curdate != df.format(today)){
             curdate = df.format(today);
             dbIndex++;
-            settingsEditor.putInt("dbIndex",dbIndex);
+            foodData.insertFood(curdate,0,0,0,0);
+            settingsEditor.putInt("dbIndex", dbIndex);
+            settingsEditor.putString("date",curdate);
             settingsEditor.apply();
         }
+        calCount = foodData.getNutrition(dbIndex).getCal();
+        fatCount = foodData.getNutrition(dbIndex).getFat();
+        proCount = foodData.getNutrition(dbIndex).getPro();
+        carCount = foodData.getNutrition(dbIndex).getCarbs();
 
         locationNum = savedInfo.getInt("LocationNum", 5);
         updateCount();
@@ -125,6 +128,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 String tempTag = foodItems.get(position).getTag();
                 int tempCal = foodItems.get(position).getCal();
                 float tempCarb = foodItems.get(position).getCarbs();
@@ -138,6 +142,8 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                 proCount += tempProtein;
 
                 foodData.updateFood(dbIndex, curdate, calCount, carCount, fatCount, proCount);
+
+
                 System.out.println(foodData.getNutrition(dbIndex).getTag() + " " + foodData.getNutrition(dbIndex).getCal() + " " +
                         foodData.getNutrition(dbIndex).getCarbs() + " " + foodData.getNutrition(dbIndex).getFat() + " " +
                         foodData.getNutrition(dbIndex).getPro());
@@ -460,17 +466,20 @@ public class Tracker extends ListActivity implements View.OnClickListener {
             }
 
             count.setText(largeNumber + " cal.");
+            settingsEditor.putString("date", curdate);
+            settingsEditor.putInt("dbIndex", dbIndex);
+            settingsEditor.putString("date",curdate);
             settingsEditor.putInt("Calories", calCount);
             settingsEditor.putFloat("Carbs", carCount);
             settingsEditor.putFloat("Fat", fatCount);
             settingsEditor.putFloat("Protein", proCount);
 
             settingsEditor.apply();
-        }
-        else {
+        } else {
             count.setText(String.valueOf(calCount) + " cal.");
             settingsEditor.putString("date", curdate);
             settingsEditor.putInt("dbIndex", dbIndex);
+            settingsEditor.putString("date",curdate);
             settingsEditor.putInt("Calories", calCount);
             settingsEditor.putFloat("Carbs", carCount);
             settingsEditor.putFloat("Fat", fatCount);
