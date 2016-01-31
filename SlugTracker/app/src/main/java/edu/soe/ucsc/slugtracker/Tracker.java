@@ -75,7 +75,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
         foodData = new FoodDataBase(this);
 
-        Button changeLocation = (Button) findViewById(R.id.changeLocation);
+        ImageButton changeLocation = (ImageButton) findViewById(R.id.changeLocation);
         changeLocation.setOnClickListener(this);
 
         ImageButton viewStatistics = (ImageButton) findViewById(R.id.statisticButton);
@@ -274,7 +274,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                 // Scrape info off site.
                 try {
                     doc = Jsoup.connect("http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=" +
-                            getCurrentLocation() + "&dtdate=" + getDateString() + "&mealName=Lunch").get();
+                            getCurrentLocation() + "&dtdate=" + getDateString() + "&mealName=" + getMealTime()).get();
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }

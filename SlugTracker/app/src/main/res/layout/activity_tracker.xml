@@ -26,7 +26,8 @@
         android:id="@+id/statisticButton"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/stats2" />
+        android:src="@drawable/stats2"
+        android:background="@null"/>
 
 
     <ListView
@@ -37,22 +38,21 @@
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="H"
-        android:id="@+id/changeLocation"
-        android:singleLine="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/closedHall"
         android:layout_centerInParent="true"
         android:src="@drawable/closedicon" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/changeLocation"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/house"
+        android:background="@null" />
 
 </RelativeLayout>
