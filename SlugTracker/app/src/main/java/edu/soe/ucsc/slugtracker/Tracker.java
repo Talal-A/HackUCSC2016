@@ -4,12 +4,9 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,7 +18,6 @@ import android.widget.TextView;
 import org.jsoup.*;
 
 import org.jsoup.nodes.Element;
-import org.w3c.dom.Document;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,7 +26,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Calendar;
 
-import java.util.Calendar;
 
 /**
  * Created by talal.abouhaiba on 1/29/16.
@@ -54,15 +49,12 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.activity_tracker);
 
-
-        // DEBUG
-        Button b = (Button) findViewById(R.id.button);
-        b.setOnClickListener(this);
+        Button changeLocation = (Button) findViewById(R.id.changeLocation);
+        changeLocation.setOnClickListener(this);
 
         savedInfo = getSharedPreferences("savedInfo", 0);
 
@@ -74,19 +66,69 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         calCount = savedInfo.getInt("Calories", 0);
         updateCount();
 
-        // Alocate memory for list
+        // Allocate memory for list
 
         foodItems = new ArrayList<>();
-        System.out.println("begin");
-        //new Task().execute();
 
-        pd = ProgressDialog.show(this,"", "Loading", true, false);
+        ListView lv = getListView();
+        lv.setAdapter(arrayAdapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                calCount += foodItems.get(position).getCal();
+                push(foodItems.get(position));
+                updateCount();
+            }
+        });
+
+        updateList();
+
+    } // end onCreate
+
+    public void onClick(View v) {
+
+        switch (v.getId()) {
+
+            case R.id.changeLocation:
+                presentLocations();
+                break;
+
+        } // end switch
+
+    } // end onClick
+
+    private void presentLocations() {
+
+        final List<String> locations = new ArrayList<>();
+
+        locations.add("Porter/Kresge");
+        locations.add("Cowell/Stevenson");
+        locations.add("Crown/Merrill");
+        locations.add("Eight/Oakes");
+        locations.add("Nine/Ten");
+
+        AlertDialog.Builder locationList = new AlertDialog.Builder(this);
+        locationList.setTitle("Select a Location");
+
+        locationList.setItems(locations.toArray(new CharSequence[locations.size()]), new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                updateList();
+            }
+        });
+
+        locationList.show();
+
+    } // end presentLocations
+
+    private void updateList() {
+
+        pd = ProgressDialog.show(this, "", "Loading", true, false);
         handler = new Handler();
 
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                System.out.println("in run");
                 Looper.prepare();
 
                 String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
@@ -94,7 +136,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                 System.out.println(mealTime());
                 String locationNumber = "05";       // User chosen
                 String currentMonth = date.substring(5, 7);          // From current date
-                String currentDay =  "29";//date.substring(8);           // From current date
+                String currentDay = "29";//date.substring(8);           // From current date
                 String currentYear = date.substring(0, 4);        // From current date
                 String currentMeal = "Breakfast";   // User chosen
 
@@ -104,33 +146,33 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                 Calendar c = Calendar.getInstance();
                 int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
                 int college = Integer.parseInt(locationNumber);
-                if((dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) &&
+                if ((dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) &&
                         (college == 20 || college == 30)) {
                     System.out.println("This college is closed");
-                } else if((dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) &&
-                        currentMeal.equals("Breakfast")){
+                } else if ((dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) &&
+                        currentMeal.equals("Breakfast")) {
                     System.out.println("Breakfast is not served this day");
                 }
 
                 // FIXME: Should be in an else block, add else after we handle an "empty day"
-                    // Scrape info off site.
-                    try {
-                        doc = Jsoup.connect("http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=" +
-                                locationNumber + "&dtdate=" + currentMonth + "%2F" + currentDay + "%2F" +
-                                currentYear + "&mealName=" + currentMeal).get();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
+                // Scrape info off site.
+                try {
+                    doc = Jsoup.connect("http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=" +
+                            locationNumber + "&dtdate=" + currentMonth + "%2F" + currentDay + "%2F" +
+                            currentYear + "&mealName=" + currentMeal).get();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
 
 
                 // Search for line with food names.
                 // String temp = doc.select("a[href]").id();
 
-                for(Element e: doc.select("a[href]"))
+                for (Element e : doc.select("a[href]"))
                     e.wrap("<foods></foods>");
 
                 // Searching through tags for just the names.
-                for(Element e: doc.getElementsByTag("foods")) {
+                for (Element e : doc.getElementsByTag("foods")) {
 
                     String current = e.select("a[href]").text();
                     String foodName = e.select("a[href]").text();
@@ -140,7 +182,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
                     String nutritionSite = e.select("a[href]").attr("abs:href");
 
-                    System.out.println(nutritionSite);
+
                     // parse needed
                     org.jsoup.nodes.Document doc2 = null;
 
@@ -152,30 +194,31 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
                     // Wraps the current food item with a nutrition tag so that we can parse them.
                     // Without this for loop we end up getting all of the food tags on a single line
-                    for(Element el: doc2.select("font"))
+                    for (Element el : doc2.select("font"))
                         el.wrap("<nutrition></nutrition>");
 
                     // Grabs the food name that is surrounded by the nutrition tag
 
                     // Allergen Information
-                    boolean milk = false, soy = false, treeOrPNut = false, gluten = false, fishShell = false,  egg = false,  wheat = false;
-                    for(Element el: doc2.select("span")){
+                    boolean milk = false, soy = false, treeOrPNut = false, gluten = false;
+                    boolean fishShell = false, egg = false, wheat = false;
+
+                    for (Element el : doc2.select("span")) {
                         String cur = el.select("span").text();
-                        System.out.println(cur);
-                        if(cur.contains("Egg"))
+                        if (cur.contains("Egg"))
                             egg = true;
-                        if(cur.contains("Soybean"))
+                        if (cur.contains("Soybean"))
                             soy = true;
-                        if(cur.contains("Gluten"))
+                        if (cur.contains("Gluten"))
                             gluten = true;
-                        if(cur.contains("Wheat"))
+                        if (cur.contains("Wheat"))
                             wheat = true;
-                        if(cur.contains("Milk"))
+                        if (cur.contains("Milk"))
                             milk = true;
-                        if(cur.contains("Tree Nut") ||
+                        if (cur.contains("Tree Nut") ||
                                 cur.contains("Peanut"))
                             treeOrPNut = true;
-                        if(cur.contains("Fish") || cur.contains("fish"))
+                        if (cur.contains("Fish") || cur.contains("fish"))
                             fishShell = true;
                     }
 
@@ -194,7 +237,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                     boolean obtainedCalories = false;
 
 
-                    for(Element el: doc2.getElementsByTag("nutrition")) {
+                    for (Element el : doc2.getElementsByTag("nutrition")) {
 
 
                         String cur = el.select("font").text();
@@ -202,7 +245,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
                         // Pushes FoodObject instances into a list of FoodObjects "foodItems"
                         if (obtainedCalories && obtainedCarbs && obtainedFat && obtainedProtein) {
-                            FoodObject tempFoodO = new FoodObject(foodName,currentCal,
+                            FoodObject tempFoodO = new FoodObject(foodName, currentCal,
                                     currentProtein, currentFat, currentCarb);
                             tempFoodO.addAllergens(milk, soy, treeOrPNut, gluten,
                                     fishShell, egg, wheat);
@@ -217,7 +260,10 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                             isProtein = false;
                             obtainedProtein = true;
 
-                        } if (isFat) {
+                        }
+
+                        if (isFat) {
+
                             String temp = cur.split("g")[0];
 
                             currentFat = Float.valueOf(temp);
@@ -225,7 +271,9 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                             isFat = false;
                             obtainedFat = true;
 
-                        }  if (isCarbs) {
+                        }
+
+                        if (isCarbs) {
                             String temp = cur.split("g")[0];
 
                             currentCarb = Float.valueOf(temp);
@@ -233,16 +281,14 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                             isCarbs = false;
                             obtainedCarbs = true;
 
-
                         }
-
 
                         if (cur.contains("Calories" + "\u00a0")) {
 
                             currentCal = Integer.parseInt(cur.split("\u00a0")[1]);
                             obtainedCalories = true;
 
-                        } else if (cur.contains("Protein"+ "\u00a0")) {
+                        } else if (cur.contains("Protein" + "\u00a0")) {
 
                             isProtein = true;
 
@@ -265,10 +311,11 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                     public void run() {
                         List<String> thelist = new ArrayList<>();
 
-                        for (FoodObject e: foodItems)
+                        for (FoodObject e : foodItems)
                             thelist.add(e.getTag());
 
-                        arrayAdapter = new ArrayAdapter(getApplicationContext(), R.layout.list_item, R.id.tvName,thelist);
+                        arrayAdapter = new ArrayAdapter(getApplicationContext(), R.layout.list_item,
+                                R.id.tvName, thelist);
 
                         getListView().setAdapter(arrayAdapter);
 
@@ -277,62 +324,13 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                 });
 
 
-
             } // end run
         }; // end runnable
         Thread thread = new Thread(runnable);
         thread.start();
-        System.out.println("end");
 
-        ListView lv = getListView();
-        lv.setAdapter(arrayAdapter);
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                calCount += foodItems.get(position).getCal();
-                push(foodItems.get(position));
-                updateCount();
-            }
-        });
-    }
-
-    // When button clicked add calories.
-    public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.button:
-                presentLocations();
-                break;
-
-        }
-
-        updateCount();
-    }
-
-    private void presentLocations() {
-
-        final List<String> locations = new ArrayList<>();
-
-        locations.add("Porter/Kresge");
-        locations.add("Cowell/Stevenson");
-        locations.add("Crown/Merrill");
-        locations.add("Eight/Oakes");
-        locations.add("Nine/Ten");
-
-        AlertDialog.Builder locationList = new AlertDialog.Builder(this);
-        locationList.setTitle("Select a Location");
-
-        locationList.setItems(locations.toArray(new CharSequence[locations.size()]), new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int which) {
-                System.out.println("worked");
-            }
-        });
-
-        locationList.show();
-
-    }
+    } // end updateList
 
 
     private void updateCount() {
