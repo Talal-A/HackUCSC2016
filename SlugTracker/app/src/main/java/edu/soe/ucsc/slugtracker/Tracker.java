@@ -88,9 +88,9 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         noList.setVisibility(View.INVISIBLE);
 
         calCount = savedInfo.getInt("Calories", 0);
-        fatCount = savedInfo.getInt("Fat", 0);
-        proCount = savedInfo.getInt("Protein",0);
-        carCount = savedInfo.getInt("Carbs", 0);
+        fatCount = savedInfo.getFloat("Fat", 0);
+        proCount = savedInfo.getFloat("Protein", 0);
+        carCount = savedInfo.getFloat("Carbs", 0);
 
         locationNum = savedInfo.getInt("LocationNum", 5);
         updateCount();
@@ -438,9 +438,9 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         else {
             count.setText(String.valueOf(calCount) + " cal.");
             settingsEditor.putInt("Calories", calCount);
-            settingsEditor.putInt("Carbs", carCount);
-            settingsEditor.putInt("Fats", fatCount);
-            settingsEditor.putInt("Protein", proCount);
+            settingsEditor.putFloat("Carbs", carCount);
+            settingsEditor.putFloat("Fats", fatCount);
+            settingsEditor.putFloat("Protein", proCount);
             settingsEditor.apply();
         }
     }
