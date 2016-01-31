@@ -49,7 +49,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
     ArrayAdapter arrayAdapter;
     ProgressDialog pd;
     private Handler handler;
-
+    private FoodDataBase foodData;
     private FoodObject[] stack = new FoodObject[500];
     int size = 0;
 
@@ -57,8 +57,12 @@ public class Tracker extends ListActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         setContentView(R.layout.activity_tracker);
+
+        foodData = new FoodDataBase(this);
+        foodData.insertFood("apple", 50, 50.5f, 50.5f, 50.5f);
+        foodData.getNutrition(1);
+
 
         savedInfo = getSharedPreferences("savedInfo", 0);
 
