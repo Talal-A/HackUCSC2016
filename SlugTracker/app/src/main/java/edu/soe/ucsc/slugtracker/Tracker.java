@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -70,6 +71,9 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         Button changeLocation = (Button) findViewById(R.id.changeLocation);
         changeLocation.setOnClickListener(this);
 
+        ImageButton viewStatistics = (ImageButton) findViewById(R.id.statisticButton);
+        viewStatistics.setOnClickListener(this);
+
         savedInfo = getSharedPreferences("savedInfo", 0);
 
         // Create buttons
@@ -121,6 +125,10 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
             case R.id.changeLocation:
                 presentLocations();
+                break;
+
+            case R.id.statisticButton:
+                System.out.println("pressed!");
                 break;
 
         } // end switch
