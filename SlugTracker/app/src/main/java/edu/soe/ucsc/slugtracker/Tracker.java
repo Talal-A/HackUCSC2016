@@ -24,6 +24,7 @@ import org.jsoup.nodes.Element;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -140,10 +141,11 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                 break;
 
             case R.id.statisticButton:
+
                 String cal = "Calories: " + calCount;
-                String fat = "Fat: " + fatCount + "g";
-                String pro = "Protein: " + proCount + "g";
-                String car = "Carbohydrates: " + carCount + "g";
+                String fat = "Fat: " + String.format("%.1f", fatCount) + "g";
+                String pro = "Protein: " + String.format("%.1f", proCount) + "g";
+                String car = "Carbohydrates: " + String.format("%.1f", carCount) + "g";
 
                 System.out.println("pressed!");
                 AlertDialog statsAlert = new AlertDialog.Builder(this).create();
@@ -426,23 +428,31 @@ public class Tracker extends ListActivity implements View.OnClickListener {
             rightOfComma = calCount - leftOfComma * 1000;
 
             String largeNumber;
-            if(rightOfComma < 100 ){
+            if(rightOfComma < 100  && rightOfComma > 9) {
                 largeNumber = (String.valueOf(leftOfComma) + "," + "0"
                         + String.valueOf(rightOfComma));
-            }
-            else {
+            } else if (rightOfComma < 10) {
+                largeNumber = (String.valueOf(leftOfComma) + "," + "00"
+                        + String.valueOf(rightOfComma));
+
+            } else {
                 largeNumber = (String.valueOf(leftOfComma) + ","
                         + String.valueOf(rightOfComma));
             }
+
             count.setText(largeNumber + " cal.");
             settingsEditor.putInt("Calories", calCount);
+            settingsEditor.putFloat("Carbs", carCount);
+            settingsEditor.putFloat("Fat", fatCount);
+            settingsEditor.putFloat("Protein", proCount);
+
             settingsEditor.apply();
         }
         else {
             count.setText(String.valueOf(calCount) + " cal.");
             settingsEditor.putInt("Calories", calCount);
             settingsEditor.putFloat("Carbs", carCount);
-            settingsEditor.putFloat("Fats", fatCount);
+            settingsEditor.putFloat("Fat", fatCount);
             settingsEditor.putFloat("Protein", proCount);
             settingsEditor.apply();
         }
