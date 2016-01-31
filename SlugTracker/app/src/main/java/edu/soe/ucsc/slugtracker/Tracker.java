@@ -199,7 +199,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
     private void updateList() {
 
-        System.out.println("Meal: " + getMealTime());
+        System.out.println("Open: " + isOpen());
 
         boolean isWebpageUp = true;
 
@@ -493,7 +493,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         int hour = c.get(Calendar.HOUR_OF_DAY);
         int day = c.get(Calendar.DAY_OF_WEEK);
 
-        if (location == 40 && hour >= 7 && hour < 23) {
+        if (location == 40 && (((day == 7 || day == 1) && hour >= 10 && hour < 23) || (day <=6 && day >= 2 && hour >= 7 && hour < 23))){
             open = true;
         } else if (location == 25 && day >= 2 && day <= 6 && hour >= 7 && hour < 19) {
             open = true;
@@ -501,7 +501,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
             open = true;
         } else if (location == 5 && ((day >= 2 && day <= 6 && hour >= 7 && hour < 20) || ((day == 1 || day == 7) && ((hour >= 7 && hour < 14) || (hour >= 17 && hour < 20))))){
             open = true;
-        } else if (location == 30 && ((day >= 2 && day <= 5 && hour >= 7 && hour < 20) || (day == 6 && hour >= 7 && hour < 19) || (day == 7 && hour >= 10 && hour < 20) || (day == 1 && hour >= 10 && hour < 23))){
+        } else if (location == 30 && ((day >= 2 && day <= 5 && hour >= 7 && hour < 23) || (day == 6 && hour >= 7 && hour < 20) || (day == 7 && hour >= 10 && hour < 20) || (day == 1 && hour >= 10 && hour < 23))){
             open = true;
         }
         
