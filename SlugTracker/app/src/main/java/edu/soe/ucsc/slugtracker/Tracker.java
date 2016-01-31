@@ -12,12 +12,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.jsoup.*;
 
 import org.jsoup.nodes.Element;
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,6 +46,8 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
     private SharedPreferences.Editor settingsEditor;
     TextView count;
+    // For closed dining hall
+    ImageView noList;
     private List<FoodObject> foodItems;
     ArrayAdapter arrayAdapter;
     ProgressDialog pd;
@@ -70,6 +76,8 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         settingsEditor = savedInfo.edit();
 
         count = (TextView) findViewById(R.id.textView);
+        noList = (ImageView) findViewById(R.id.closedHall);
+        noList.setVisibility(View.INVISIBLE);
 
         calCount = savedInfo.getInt("Calories", 0);
         locationNum = savedInfo.getInt("LocationNum", 5);
@@ -161,6 +169,10 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
     private void updateList() {
 
+        boolean isWebpageUp = true;
+
+        noList.setVisibility(View.INVISIBLE);
+
         pd = ProgressDialog.show(this, "", "Loading", true, false);
         handler = new Handler();
 
@@ -196,11 +208,10 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
-                boolean isWebpageUp = true;
+
                 for(Element el: doc.select("div")) {
                     String cur = doc.select("div").text();
                     if (cur.contains("No Data")) {
-                        isWebpageUp = false;
                     }
                 }
 
@@ -277,8 +288,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
 
                     for (Element el : doc2.getElementsByTag("nutrition")) {
-
-
+                        
                         String cur = el.select("font").text();
                         //System.out.println("TEST: " + cur);
 
@@ -359,6 +369,12 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                         getListView().setAdapter(arrayAdapter);
 
                         pd.dismiss();
+                        if (foodItems.size() == 0) {
+                            noList.setVisibility(View.VISIBLE);
+                            Toast toast = Toast.makeText(getApplicationContext(), "This dining hall is currently closed", Toast.LENGTH_LONG);
+                            toast.show();
+                        }
+
                     }
                 });
 
@@ -367,7 +383,6 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         }; // end runnable
         Thread thread = new Thread(runnable);
         thread.start();
-
 
     } // end updateList
 
