@@ -26,7 +26,7 @@
         android:id="@+id/statisticButton"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@drawable/stats2" />
 
 
     <ListView
