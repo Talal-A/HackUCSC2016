@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -40,7 +41,7 @@ import java.util.Calendar;
  * This class is designed to allow the user to "add" meal items to their running calorie total.
  */
 
-public class Tracker extends ListActivity implements View.OnClickListener {
+public class Tracker extends ListActivity implements View.OnClickListener{
 
     SharedPreferences savedInfo;
 
@@ -96,7 +97,6 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
 
 
-
         locationNum = savedInfo.getInt("LocationNum", 5);
         updateCount();
 
@@ -106,6 +106,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
         ListView lv = getListView();
         lv.setAdapter(arrayAdapter);
+        lv.setLongClickable(true);
 
         if(foodData.getNutrition(1).getTag() != null)
             System.out.println(foodData.getNutrition(1).getTag());
@@ -136,6 +137,31 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                 push(foodItems.get(position));
                 updateCount();
             }
+        });
+
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+        public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                                       int pos, long id) {
+
+                String cal = "Calories: " + foodItems.get(pos).getCal();
+                String fat = "Fat: " + String.format("%.1f", foodItems.get(pos).getFat()) + "g";
+                String pro = "Protein: " + String.format("%.1f", foodItems.get(pos).getPro()) + "g";
+                String car = "Carbohydrates: " + String.format("%.1f", foodItems.get(pos).getCarbs()) + "g";
+
+                AlertDialog foodStats = new AlertDialog.Builder(Tracker.this).create();
+
+                System.out.println("Long click index: " + pos);
+                System.out.println("pressed!");
+                foodStats.setTitle(foodItems.get(pos).getTag());
+                foodStats.setMessage(cal + "\n" + fat + "\n" + pro + "\n" + car);
+
+                foodStats.show();
+
+
+                return true;
+            }
+
         });
 
         updateList();
@@ -477,6 +503,8 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         fatCount = foodData.getNutrition(dbIndex).getFat();
         proCount = foodData.getNutrition(dbIndex).getPro();
         carCount = foodData.getNutrition(dbIndex).getCarbs();
+
+        updateCount();
 
 
     } // end updateList
