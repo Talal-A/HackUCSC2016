@@ -73,6 +73,30 @@ public class FoodObject {
         return carbs;
     }
 
+    public String getAllergens() {
+
+        String toReturn = "";
+
+        if (egg)
+            toReturn += "Eggs, ";
+        if (wheat)
+            toReturn += "Wheat, ";
+        if (fishShell)
+            toReturn += "Fish/Shellfish, ";
+        if (gluten)
+            toReturn += "Gluten, ";
+        if (treeOrPNut)
+            toReturn += "Nuts, ";
+        if (soy)
+            toReturn += "Soy, ";
+        if (milk)
+            toReturn += "Dairy, ";
+
+        return toReturn.substring(0, toReturn.length() - 2);
+
+        
+    }
+
 }
 
 

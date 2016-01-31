@@ -149,12 +149,13 @@ public class Tracker extends ListActivity implements View.OnClickListener{
                 String pro = "Protein: " + String.format("%.1f", foodItems.get(pos).getPro()) + "g";
                 String car = "Carbohydrates: " + String.format("%.1f", foodItems.get(pos).getCarbs()) + "g";
 
+                String al = "Allergens: " + foodItems.get(pos).getAllergens();
                 AlertDialog foodStats = new AlertDialog.Builder(Tracker.this).create();
 
                 System.out.println("Long click index: " + pos);
                 System.out.println("pressed!");
                 foodStats.setTitle(foodItems.get(pos).getTag());
-                foodStats.setMessage(cal + "\n" + fat + "\n" + pro + "\n" + car);
+                foodStats.setMessage(cal + "\n" + fat + "\n" + pro + "\n" + car + "\n" + al);
 
                 foodStats.show();
 
