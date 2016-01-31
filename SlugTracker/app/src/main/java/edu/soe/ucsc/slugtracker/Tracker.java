@@ -143,9 +143,9 @@ public class Tracker extends ListActivity implements View.OnClickListener {
             case R.id.statisticButton:
 
                 String cal = "Calories: " + calCount;
-                String fat = "Fat: " + String.format("%.2f", fatCount) + "g";
-                String pro = "Protein: " + String.format("%.2f", proCount) + "g";
-                String car = "Carbohydrates: " + String.format("%.2f", carCount) + "g";
+                String fat = "Fat: " + String.format("%.1f", fatCount) + "g";
+                String pro = "Protein: " + String.format("%.1f", proCount) + "g";
+                String car = "Carbohydrates: " + String.format("%.1f", carCount) + "g";
 
                 System.out.println("pressed!");
                 AlertDialog statsAlert = new AlertDialog.Builder(this).create();
@@ -428,14 +428,18 @@ public class Tracker extends ListActivity implements View.OnClickListener {
             rightOfComma = calCount - leftOfComma * 1000;
 
             String largeNumber;
-            if(rightOfComma < 100 ){
+            if(rightOfComma < 100  && rightOfComma > 9) {
                 largeNumber = (String.valueOf(leftOfComma) + "," + "0"
                         + String.valueOf(rightOfComma));
-            }
-            else {
+            } else if (rightOfComma < 10) {
+                largeNumber = (String.valueOf(leftOfComma) + "," + "00"
+                        + String.valueOf(rightOfComma));
+
+            } else {
                 largeNumber = (String.valueOf(leftOfComma) + ","
                         + String.valueOf(rightOfComma));
             }
+
             count.setText(largeNumber + " cal.");
             settingsEditor.putInt("Calories", calCount);
             settingsEditor.putFloat("Carbs", carCount);
