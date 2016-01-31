@@ -1,5 +1,6 @@
 package edu.soe.ucsc.slugtracker;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -57,6 +58,11 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
 
         setContentView(R.layout.activity_tracker);
+
+
+        // DEBUG
+        Button b = (Button) findViewById(R.id.button);
+        b.setOnClickListener(this);
 
         savedInfo = getSharedPreferences("savedInfo", 0);
 
@@ -324,10 +330,39 @@ public class Tracker extends ListActivity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
 
+            case R.id.button:
+                presentLocations();
+                break;
+
         }
 
         updateCount();
     }
+
+    private void presentLocations() {
+
+        final List<String> locations = new ArrayList<>();
+
+        locations.add("Porter/Kresge");
+        locations.add("Cowell/Stevenson");
+        locations.add("Crown/Merrill");
+        locations.add("Eight/Oakes");
+        locations.add("Nine/Ten");
+
+        AlertDialog.Builder locationList = new AlertDialog.Builder(this);
+        locationList.setTitle("Select a Location");
+
+        locationList.setItems(locations.toArray(new CharSequence[locations.size()]), new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                System.out.println("worked");
+            }
+        });
+
+        locationList.show();
+
+    }
+
 
     private void updateCount() {
         count.setText(String.valueOf(calCount));
@@ -362,9 +397,26 @@ public class Tracker extends ListActivity implements View.OnClickListener {
             mealHour = "Lunch";
         }else if(hourOfDay >= 5 && hourOfDay < 23){
             mealHour = "Dinner";
-    }
+        }
 
         return mealHour;
+    }
+
+    // Takes in dinning hall name(ex. Cowell/Stevenson), and returns it's web number.
+    public int webLocation(String location){
+        int locationNumber = 0;
+        if(location == "Cowell/Stevenson"){
+            locationNumber = 5;
+        }else if(location == "Crown/Merrill"){
+            locationNumber = 20;
+        }else if(location == "Porter/Kresge") {
+            locationNumber = 25;
+        }else if(location == "Eight/Oakes"){
+            locationNumber = 30;
+        }else if(location == "Nine/Ten"){
+            locationNumber = 40;
+        }
+        return locationNumber;
     }
 }
 /*
