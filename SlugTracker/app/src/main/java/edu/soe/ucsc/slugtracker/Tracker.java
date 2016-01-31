@@ -36,9 +36,12 @@ import java.util.Calendar;
 public class Tracker extends ListActivity implements View.OnClickListener {
 
     SharedPreferences savedInfo;
+
+    private int calCount;
+    private int locationNum;
+
     private SharedPreferences.Editor settingsEditor;
     TextView count;
-    private int calCount;
     private List<FoodObject> foodItems;
     ArrayAdapter arrayAdapter;
     ProgressDialog pd;
@@ -64,6 +67,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         count = (TextView) findViewById(R.id.textView);
 
         calCount = savedInfo.getInt("Calories", 0);
+        locationNum = savedInfo.getInt("LocationNum", 5);
         updateCount();
 
         // Allocate memory for list
@@ -113,7 +117,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         locationList.setItems(locations.toArray(new CharSequence[locations.size()]), new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                updateList();
+                setLocation(webLocation(locations.get(which)));
             }
         });
 
@@ -121,45 +125,56 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
     } // end presentLocations
 
+    public int getCurrentLocation() {
+        return locationNum;
+    }
+
+
+    private void setLocation(int locationNumber) {
+
+        locationNum = locationNumber;
+        settingsEditor.putInt("LocationNum", locationNum);
+        settingsEditor.apply();
+
+        System.out.println("Setting location to: " + locationNum);
+        updateList();
+
+    }
+
     private void updateList() {
 
         pd = ProgressDialog.show(this, "", "Loading", true, false);
         handler = new Handler();
+
+        foodItems = null;
+        foodItems = new ArrayList<>();
 
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 Looper.prepare();
 
-                String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-                System.out.println(date);
-                System.out.println(mealTime());
-                String locationNumber = "05";       // User chosen
-                String currentMonth = date.substring(5, 7);          // From current date
-                String currentDay = "29";//date.substring(8);           // From current date
-                String currentYear = date.substring(0, 4);        // From current date
-                String currentMeal = "Breakfast";   // User chosen
-
                 org.jsoup.nodes.Document doc = null;
 
                 // checks what day of week it is to determine whether college is closed or not
                 Calendar c = Calendar.getInstance();
                 int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
-                int college = Integer.parseInt(locationNumber);
+                int college = getCurrentLocation();
                 if ((dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) &&
                         (college == 20 || college == 30)) {
                     System.out.println("This college is closed");
                 } else if ((dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) &&
-                        currentMeal.equals("Breakfast")) {
+                        getMealTime().equals("Breakfast")) {
                     System.out.println("Breakfast is not served this day");
                 }
 
                 // FIXME: Should be in an else block, add else after we handle an "empty day"
                 // Scrape info off site.
+                System.out.println("http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=" +
+                        getCurrentLocation() + "&dtdate=" + getDateString() + "&mealName=" + getMealTime());
                 try {
                     doc = Jsoup.connect("http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=" +
-                            locationNumber + "&dtdate=" + currentMonth + "%2F" + currentDay + "%2F" +
-                            currentYear + "&mealName=" + currentMeal).get();
+                            getCurrentLocation() + "&dtdate=" + getDateString() + "&mealName=" + getMealTime()).get();
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -356,7 +371,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
     }
 
     // Get time of day and returns String for Breakfast, Lunch, Dinner, or Closed.
-    public String mealTime(){
+    public String getMealTime(){
         Calendar c = Calendar.getInstance();
         int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
         String mealHour = "Closed";
@@ -386,5 +401,16 @@ public class Tracker extends ListActivity implements View.OnClickListener {
             locationNumber = 40;
         }
         return locationNumber;
+    }
+
+    private String getDateString() {
+
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        System.out.println(date);
+        String currentMonth = date.substring(5, 7);          // From current date
+        String currentDay = date.substring(8);           // From current date
+        String currentYear = date.substring(0, 4);        // From current date
+
+        return currentMonth + "%2F" + currentDay + "%2F" + currentYear;
     }
 }
