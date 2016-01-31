@@ -24,6 +24,7 @@ import org.jsoup.nodes.Element;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -140,10 +141,12 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                 break;
 
             case R.id.statisticButton:
+
+                String s = String.format("%.2f", number)
                 String cal = "Calories: " + calCount;
-                String fat = "Fat: " + fatCount + "g";
-                String pro = "Protein: " + proCount + "g";
-                String car = "Carbohydrates: " + carCount + "g";
+                String fat = "Fat: " + String.format("%.2f", fatCount) + "g";
+                String pro = "Protein: " + String.format("%.2f", proCount) + "g";
+                String car = "Carbohydrates: " + String.format("%.2f", carCount) + "g";
 
                 System.out.println("pressed!");
                 AlertDialog statsAlert = new AlertDialog.Builder(this).create();
