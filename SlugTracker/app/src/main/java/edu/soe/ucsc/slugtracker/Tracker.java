@@ -142,7 +142,6 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
             case R.id.statisticButton:
 
-                String s = String.format("%.2f", number)
                 String cal = "Calories: " + calCount;
                 String fat = "Fat: " + String.format("%.2f", fatCount) + "g";
                 String pro = "Protein: " + String.format("%.2f", proCount) + "g";
@@ -439,13 +438,17 @@ public class Tracker extends ListActivity implements View.OnClickListener {
             }
             count.setText(largeNumber + " cal.");
             settingsEditor.putInt("Calories", calCount);
+            settingsEditor.putFloat("Carbs", carCount);
+            settingsEditor.putFloat("Fat", fatCount);
+            settingsEditor.putFloat("Protein", proCount);
+
             settingsEditor.apply();
         }
         else {
             count.setText(String.valueOf(calCount) + " cal.");
             settingsEditor.putInt("Calories", calCount);
             settingsEditor.putFloat("Carbs", carCount);
-            settingsEditor.putFloat("Fats", fatCount);
+            settingsEditor.putFloat("Fat", fatCount);
             settingsEditor.putFloat("Protein", proCount);
             settingsEditor.apply();
         }
