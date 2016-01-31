@@ -74,7 +74,6 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         setContentView(R.layout.activity_tracker);
 
         foodData = new FoodDataBase(this);
-        foodData.insertFood("", 0, 0, 0, 0);
 
         Button changeLocation = (Button) findViewById(R.id.changeLocation);
         changeLocation.setOnClickListener(this);
@@ -96,21 +95,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         dbIndex = savedInfo.getInt("dbIndex", 0);
 
 
-        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-        Date today = Calendar.getInstance().getTime();
-        System.out.println(df.format(today));
-        if(curdate != df.format(today)){
-            curdate = df.format(today);
-            dbIndex++;
-            foodData.insertFood(curdate,0,0,0,0);
-            settingsEditor.putInt("dbIndex", dbIndex);
-            settingsEditor.putString("date",curdate);
-            settingsEditor.apply();
-        }
-        calCount = foodData.getNutrition(dbIndex).getCal();
-        fatCount = foodData.getNutrition(dbIndex).getFat();
-        proCount = foodData.getNutrition(dbIndex).getPro();
-        carCount = foodData.getNutrition(dbIndex).getCarbs();
+
 
         locationNum = savedInfo.getInt("LocationNum", 5);
         updateCount();
@@ -166,23 +151,49 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                 break;
 
             case R.id.statisticButton:
+                presentDates();
 
-                String cal = "Calories: " + calCount;
-                String fat = "Fat: " + String.format("%.1f", fatCount) + "g";
-                String pro = "Protein: " + String.format("%.1f", proCount) + "g";
-                String car = "Carbohydrates: " + String.format("%.1f", carCount) + "g";
-
-                System.out.println("pressed!");
-                AlertDialog statsAlert = new AlertDialog.Builder(this).create();
-                        statsAlert.setTitle("Statistics:");
-                        statsAlert.setMessage(cal + "\n" + fat + "\n" + pro + "\n" + car);
-
-                statsAlert.show();
                 break;
 
         } // end switch
 
     } // end onClick
+
+    private void presentDates() {
+        final List<String> dates = new ArrayList<>();
+
+        for (int i = 1; i <= dbIndex; i++) {
+            dates.add(foodData.getNutrition(i).getTag());
+        }
+
+        AlertDialog.Builder dateList = new AlertDialog.Builder(this);
+        dateList.setTitle("Select a date");
+
+        dateList.setItems(dates.toArray(new CharSequence[dates.size()]), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                presentSpecificDateInfo(which+1);
+            }
+        });
+
+        dateList.show();
+    }
+
+    private void presentSpecificDateInfo(int index) {
+
+        String cal = "Calories: " + foodData.getNutrition(index).getCal();
+        String fat = "Fat: " + String.format("%.1f", foodData.getNutrition(index).getFat()) + "g";
+        String pro = "Protein: " + String.format("%.1f", foodData.getNutrition(index).getPro()) + "g";
+        String car = "Carbohydrates: " + String.format("%.1f", foodData.getNutrition(index).getCarbs()) + "g";
+
+        System.out.println("pressed!");
+        AlertDialog statsAlert = new AlertDialog.Builder(this).create();
+        statsAlert.setTitle("Statistics:");
+        statsAlert.setMessage(cal + "\n" + fat + "\n" + pro + "\n" + car);
+
+        statsAlert.show();
+
+    }
 
     private void presentLocations() {
 
@@ -443,6 +454,29 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         Thread thread = new Thread(runnable);
         thread.start();
 
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+        Date today = Calendar.getInstance().getTime();
+
+        System.out.println("the first: " + curdate);
+        System.out.println("the date: " + df.format(today));
+
+        if(!curdate.equals(df.format(today))){
+            System.out.println("SWAPPING");
+            curdate = df.format(today);
+            dbIndex++;
+            foodData.insertFood(curdate,0,0,0,0);
+            settingsEditor.putInt("dbIndex", dbIndex);
+            settingsEditor.putString("date",curdate);
+            settingsEditor.apply();
+            updateCount();
+        }
+
+        calCount = foodData.getNutrition(dbIndex).getCal();
+        fatCount = foodData.getNutrition(dbIndex).getFat();
+        proCount = foodData.getNutrition(dbIndex).getPro();
+        carCount = foodData.getNutrition(dbIndex).getCarbs();
+
+
     } // end updateList
 
 
@@ -468,7 +502,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
             count.setText(largeNumber + " cal.");
             settingsEditor.putString("date", curdate);
             settingsEditor.putInt("dbIndex", dbIndex);
-            settingsEditor.putString("date",curdate);
+            settingsEditor.putString("date", curdate);
             settingsEditor.putInt("Calories", calCount);
             settingsEditor.putFloat("Carbs", carCount);
             settingsEditor.putFloat("Fat", fatCount);
