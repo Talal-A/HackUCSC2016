@@ -43,9 +43,9 @@ public class Tracker extends ListActivity implements View.OnClickListener {
     SharedPreferences savedInfo;
 
     private int calCount;
-    private int fatCount;
-    private int proCount;
-    private int carCount;
+    private float fatCount;
+    private float proCount;
+    private float carCount;
 
     private int locationNum;
 
@@ -116,6 +116,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
 
                 calCount += tempCal;
+
 
                 foodData.updateFood(1, tempTag, calCount, tempCarb, tempFat, tempProtein);
                 push(foodItems.get(position));
@@ -418,12 +419,14 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         if(calCount >= 1000) {
             leftOfComma = calCount / 1000;
             rightOfComma = calCount - leftOfComma * 1000;
+
+            String largeNumber;
             if(rightOfComma < 100 ){
-                String largeNumber = (String.valueOf(leftOfComma) + "," + "0"
+                largeNumber = (String.valueOf(leftOfComma) + "," + "0"
                         + String.valueOf(rightOfComma));
             }
             else {
-                String largeNumber = (String.valueOf(leftOfComma) + ","
+                largeNumber = (String.valueOf(leftOfComma) + ","
                         + String.valueOf(rightOfComma));
             }
             count.setText(largeNumber + " cal.");
