@@ -158,87 +158,27 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                     // Grabs the food name that is surrounded by the nutrition tag
 
                     // Allergen Information
-                    //String[] tempAllergens = null;
                     boolean milk = false, soy = false, treeOrPNut = false, gluten = false, fishShell = false,  egg = false,  wheat = false;
-                    //allergenBoolean = false;
                     for(Element el: doc2.select("span")){
                         String cur = el.select("span").text();
                         System.out.println(cur);
-                        if(cur.contains("Egg")){
+                        if(cur.contains("Egg"))
                             egg = true;
-                            System.out.println("Contains Eggs");
-                        }
-                        if(cur.contains("Soybean")){
+                        if(cur.contains("Soybean"))
                             soy = true;
-                            System.out.println("Contains Soybean");
-                        }
-                        if(cur.contains("Gluten")){
+                        if(cur.contains("Gluten"))
                             gluten = true;
-                            System.out.println("Contains Gluten");
-                        }
-                        if(cur.contains("Wheat")){
+                        if(cur.contains("Wheat"))
                             wheat = true;
-                            System.out.println("Contains Wheat");
-                        }
-                        if(cur.contains("Milk")){
+                        if(cur.contains("Milk"))
                             milk = true;
-                            System.out.println("Contains Milk");
-                        }
                         if(cur.contains("Tree Nut") ||
-                                cur.contains("Peanut")) {
+                                cur.contains("Peanut"))
                             treeOrPNut = true;
-                            System.out.println("Contains Tree Nut / Peanut");
-                        }
-                        if(cur.contains("Fish") || cur.contains("fish")){
+                        if(cur.contains("Fish") || cur.contains("fish"))
                             fishShell = true;
-                            System.out.println("Contains Fish");
-                        }
-                        /*
-                        if (allergenBoolean){
-                            System.out.println("IN ALLERGEN BOOLEAN");
-                            tempAllergens = cur.split(",");
-                            for(int i = 0; i < tempAllergens.length; i++){
-                                System.out.println("Allergen info: " + tempAllergens[i]);
-                            }
-                            break;
-                        }
-                        if(cur.contains("Allergens:" + "\u00a0")){
-                            allergenBoolean = true;
-                        }
-                        */
-                    }/*
-                    if (tempAllergens != null)
-                    for(int i = 0; i < tempAllergens.length; i++){
-                        if(tempAllergens[i].contains("Egg")){
-                            egg = true;
-                            System.out.println("Contains Eggs");
-                        }
-                        if(tempAllergens[i].contains("Soybean")){
-                            soy = true;
-                            System.out.println("Contains Soybean");
-                        }
-                        if(tempAllergens[i].contains("Gluten")){
-                            gluten = true;
-                            System.out.println("Contains Gluten");
-                        }
-                        if(tempAllergens[i].contains("Wheat")){
-                            wheat = true;
-                            System.out.println("Contains Wheat");
-                        }
-                        if(tempAllergens[i].contains("Milk")){
-                            milk = true;
-                            System.out.println("Contains Milk");
-                        }
-                        if(tempAllergens[i].contains("Tree Nut") ||
-                                tempAllergens[i].contains("Peanut")) {
-                            treeOrPNut = true;
-                            System.out.println("Contains Tree Nut / Peanut");
-                        }
-                        if(tempAllergens[i].contains("Fish") || tempAllergens[i].contains("fish")){
-                            fishShell = true;
-                            System.out.println("Contains Fish");
-                        }
-                    }*/
+                    }
+
                     boolean isProtein = false;
                     boolean isFat = false;
                     boolean isCarbs = false;
@@ -260,6 +200,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                         String cur = el.select("font").text();
                         //System.out.println("TEST: " + cur);
 
+                        // Pushes FoodObject instances into a list of FoodObjects "foodItems"
                         if (obtainedCalories && obtainedCarbs && obtainedFat && obtainedProtein) {
                             FoodObject tempFoodO = new FoodObject(foodName,currentCal,
                                     currentProtein, currentFat, currentCarb);
@@ -314,11 +255,8 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                             isCarbs = true;
 
                         }
-
-
-
-                    }
-                }
+                    } // End of for loop with "nutrition" tag | Loop that scrapes nutritional info
+                } // End of for loop with "foods" tag | Loop that grabs each food items name
 
                 Looper.myLooper().quit();
 
@@ -452,10 +390,3 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         return locationNumber;
     }
 }
-/*
-    <tbody>
-        <tr>...<tr> Contains all of the information for each food item
-
-    It looks like "labelrecipe" is the tag i'll be using to find to scrape the website
-    <div class="labelrecipe">Texas Beef Chili</div>
- */
