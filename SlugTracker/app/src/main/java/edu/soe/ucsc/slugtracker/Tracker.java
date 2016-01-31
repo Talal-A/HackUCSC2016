@@ -427,16 +427,22 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         return removed;
     }
 
-    // Get time of day and returns String for Breakfast, Lunch, Dinner, or Closed.
+    // Uses date and time to determine Breakfast, Lunch, Dinner, or Closed.
     public String getMealTime(){
+
+        int location = getCurrentLocation();
         Calendar c = Calendar.getInstance();
         int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
+        int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
         String mealHour = "Closed";
-        if(hourOfDay >= 7 && hourOfDay < 12){
-            mealHour = "Breakfast";
-        }else if(hourOfDay >= 12 && hourOfDay < 17){
+
+        if((location == 5 || location == 30 || location == 40) && (dayOfWeek == 7 || dayOfWeek == 1) && hourOfDay >= 10 && hourOfDay < 17){
             mealHour = "Lunch";
-        }else if(hourOfDay >= 5 && hourOfDay < 23){
+        }else if(hourOfDay >= 7 && hourOfDay < 12){
+            mealHour = "Breakfast";
+        } if(hourOfDay >= 12 && hourOfDay < 17){
+            mealHour = "Lunch";
+        }else if(hourOfDay >= 17 && hourOfDay < 23){
             mealHour = "Dinner";
         }
 
