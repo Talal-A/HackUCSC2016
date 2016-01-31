@@ -273,6 +273,8 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                 // FIXME: Should be in an else block, add else after we handle an "empty day"
                 // Scrape info off site.
                 try {
+                    System.out.println("http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=" +
+                            getCurrentLocation() + "&dtdate=" + getDateString() + "&mealName=" + getMealTime());
                     doc = Jsoup.connect("http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=" +
                             getCurrentLocation() + "&dtdate=" + getDateString() + "&mealName=" + getMealTime()).get();
                 } catch (IOException ex) {
