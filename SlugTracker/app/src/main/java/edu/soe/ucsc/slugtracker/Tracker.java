@@ -392,7 +392,14 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         if(calCount >= 1000) {
             leftOfComma = calCount / 1000;
             rightOfComma = calCount - leftOfComma * 1000;
-            String largeNumber = (String.valueOf(leftOfComma) + "," + String.valueOf(rightOfComma));
+            if(rightOfComma < 100 ){
+                String largeNumber = (String.valueOf(leftOfComma) + "," + "0"
+                        + String.valueOf(rightOfComma));
+            }
+            else {
+                String largeNumber = (String.valueOf(leftOfComma) + ","
+                        + String.valueOf(rightOfComma));
+            }
             count.setText(largeNumber + " cal.");
             settingsEditor.putInt("Calories", calCount);
             settingsEditor.apply();
