@@ -116,6 +116,9 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
 
                 calCount += tempCal;
+                carCount += tempCarb;
+                fatCount += tempFat;
+                proCount += tempProtein;
 
 
                 foodData.updateFood(1, tempTag, calCount, tempCarb, tempFat, tempProtein);
