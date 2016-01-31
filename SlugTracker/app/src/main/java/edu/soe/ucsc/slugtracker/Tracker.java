@@ -158,12 +158,13 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                     // Grabs the food name that is surrounded by the nutrition tag
 
                     // Allergen Information
-                    String[] tempAllergens;
-                    boolean milk, soy, treeOrPNut, gluten, fishShell,  egg,  wheat, allergenBoolean;
+                    String[] tempAllergens = null;
+                    boolean milk = false, soy = false, treeOrPNut = false, gluten = false, fishShell = false,  egg = false,  wheat = false, allergenBoolean = false;
                     for(Element el: doc2.select("span")){
                         String cur = el.select("span").text();
                         System.out.println(cur);
                         if (allergenBoolean){
+                            System.out.println("IN ALLERGEN BOOLEAN");
                             tempAllergens = cur.split(",");
                             for(int i = 0; i < tempAllergens.length; i++){
                                 System.out.println("Allergen info: " + tempAllergens[i]);
@@ -175,6 +176,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                         }
 
                     }
+                    if (tempAllergens != null)
                     for(int i = 0; i < tempAllergens.length; i++){
                         if(tempAllergens[i].contains("Egg")){
                             egg = true;
@@ -197,7 +199,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                             System.out.println("Contains Milk");
                         }
                         if(tempAllergens[i].contains("Tree Nut") ||
-                                tempAllergens[i].contains("Peanut"){
+                                tempAllergens[i].contains("Peanut")) {
                             treeOrPNut = true;
                             System.out.println("Contains Tree Nut / Peanut");
                         }
