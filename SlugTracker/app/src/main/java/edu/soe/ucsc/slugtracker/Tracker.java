@@ -25,6 +25,7 @@ import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,6 +47,8 @@ public class Tracker extends ListActivity implements View.OnClickListener {
     private float fatCount;
     private float proCount;
     private float carCount;
+    private String curdate;
+    private int dbIndex;
 
     private int locationNum;
 
@@ -80,6 +83,8 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
         savedInfo = getSharedPreferences("savedInfo", 0);
 
+
+
         // Create buttons
         settingsEditor = savedInfo.edit();
 
@@ -91,6 +96,17 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         fatCount = savedInfo.getFloat("Fat", 0);
         proCount = savedInfo.getFloat("Protein", 0);
         carCount = savedInfo.getFloat("Carbs", 0);
+        curdate = savedInfo.getString("date", "");
+        dbIndex = savedInfo.getInt("dbIndex",0);
+
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+        Date today = Calendar.getInstance().getTime();
+        if(curdate != df.format(today)){
+            curdate = df.format(today);
+            dbIndex++;
+            settingsEditor.putInt("dbIndex",dbIndex);
+            settingsEditor.apply();
+        }
 
         locationNum = savedInfo.getInt("LocationNum", 5);
         updateCount();
@@ -120,8 +136,11 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                 fatCount += tempFat;
                 proCount += tempProtein;
 
-
-                foodData.updateFood(1, tempTag, calCount, tempCarb, tempFat, tempProtein);
+                foodData.updateFood(dbIndex, curdate, calCount, carCount, fatCount, proCount);
+                System.out.println(foodData.getNutrition(dbIndex).getTag() + " " + foodData.getNutrition(dbIndex).getCal() + " " +
+                        foodData.getNutrition(dbIndex).getCarbs() + " " + foodData.getNutrition(dbIndex).getFat() + " " +
+                        foodData.getNutrition(dbIndex).getPro());
+                System.out.println(dbIndex);
                 push(foodItems.get(position));
                 updateCount();
             }
@@ -236,7 +255,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
                 // Scrape info off site.
                 try {
                     doc = Jsoup.connect("http://nutrition.sa.ucsc.edu/pickMenu.asp?locationNum=" +
-                            getCurrentLocation() + "&dtdate=" + getDateString() + "&mealName=" + getMealTime()).get();
+                            getCurrentLocation() + "&dtdate=" + getDateString() + "&mealName=Lunch").get();
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -440,6 +459,8 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         }
         else {
             count.setText(String.valueOf(calCount) + " cal.");
+            settingsEditor.putString("date", curdate);
+            settingsEditor.putInt("dbIndex", dbIndex);
             settingsEditor.putInt("Calories", calCount);
             settingsEditor.putFloat("Carbs", carCount);
             settingsEditor.putFloat("Fats", fatCount);
