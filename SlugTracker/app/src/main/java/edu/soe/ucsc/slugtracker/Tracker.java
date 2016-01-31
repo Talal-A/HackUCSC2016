@@ -169,6 +169,8 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
     private void updateList() {
 
+        System.out.println("Meal: " + getMealTime());
+
         boolean isWebpageUp = true;
 
         noList.setVisibility(View.INVISIBLE);
@@ -426,7 +428,7 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         Calendar c = Calendar.getInstance();
         int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
         int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
-        String mealHour = "Closed";
+        String mealHour = "Breakfast";
 
         if((location == 5 || location == 30 || location == 40) && (dayOfWeek == 7 || dayOfWeek == 1) && hourOfDay >= 10 && hourOfDay < 17){
             mealHour = "Lunch";
@@ -439,6 +441,29 @@ public class Tracker extends ListActivity implements View.OnClickListener {
         }
 
         return mealHour;
+    }
+
+    public boolean isOpen() {
+        boolean open = false;
+
+        int location = getCurrentLocation();
+        Calendar c = Calendar.getInstance();
+        int hour = c.get(Calendar.HOUR_OF_DAY);
+        int day = c.get(Calendar.DAY_OF_WEEK);
+
+        if (location == 40 && hour >= 7 && hour < 23) {
+            open = true;
+        } else if (location == 25 && day >= 2 && day <= 6 && hour >= 7 && hour < 19) {
+            open = true;
+        } else if (location == 20 && day >= 2 && day <= 6 && hour >= 7 && hour < 20){
+            open = true;
+        } else if (location == 5 && ((day >= 2 && day <= 6 && hour >= 7 && hour < 20) || ((day == 1 || day == 7) && ((hour >= 7 && hour < 14) || (hour >= 17 && hour < 20))))){
+            open = true;
+        } else if (location == 30 && ((day >= 2 && day <= 5 && hour >= 7 && hour < 20) || (day == 6 && hour >= 7 && hour < 19) || (day == 7 && hour >= 10 && hour < 20) || (day == 1 && hour >= 10 && hour < 23))){
+            open = true;
+        }
+        
+        return open;
     }
 
     // Takes in dinning hall name(ex. Cowell/Stevenson), and returns it's web number.
