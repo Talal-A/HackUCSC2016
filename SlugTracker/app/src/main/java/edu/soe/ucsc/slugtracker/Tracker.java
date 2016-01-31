@@ -47,6 +47,8 @@ public class Tracker extends ListActivity implements View.OnClickListener {
     ProgressDialog pd;
     private Handler handler;
 
+    FoodDataBase foodData;
+
     private FoodObject[] stack = new FoodObject[500];
     int size = 0;
 
@@ -55,6 +57,9 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracker);
+
+        foodData = new FoodDataBase(this);
+        foodData.insertFood("", 0, 0, 0, 0);
 
         Button changeLocation = (Button) findViewById(R.id.changeLocation);
         changeLocation.setOnClickListener(this);
@@ -76,10 +81,23 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
         ListView lv = getListView();
         lv.setAdapter(arrayAdapter);
+
+        if(foodData.getNutrition(1).getTag() != null)
+            System.out.println(foodData.getNutrition(1).getTag());
+
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                calCount += foodItems.get(position).getCal();
+                String tempTag = foodItems.get(position).getTag();
+                int tempCal = foodItems.get(position).getCal();
+                float tempCarb = foodItems.get(position).getCarbs();
+                float tempFat = foodItems.get(position).getFat();
+                float tempProtein = foodItems.get(position).getPro();
+
+
+                calCount += tempCal;
+
+                foodData.updateFood(1, tempTag, calCount, tempCarb, tempFat, tempProtein);
                 push(foodItems.get(position));
                 updateCount();
             }
@@ -413,4 +431,5 @@ public class Tracker extends ListActivity implements View.OnClickListener {
 
         return currentMonth + "%2F" + currentDay + "%2F" + currentYear;
     }
+
 }
