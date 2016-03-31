@@ -108,8 +108,8 @@ public class Tracker extends ListActivity implements View.OnClickListener{
         lv.setAdapter(arrayAdapter);
         lv.setLongClickable(true);
 
-        if(foodData.getNutrition(1).getTag() != null)
-            System.out.println(foodData.getNutrition(1).getTag());
+//        if(foodData.getNutrition(1).getTag() != null)
+//            System.out.println(foodData.getNutrition(1).getTag());
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
